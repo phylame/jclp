@@ -17,11 +17,13 @@
 package pw.phylame.commons.util;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 
 import java.util.*;
 
+@RequiredArgsConstructor
 public class CollectionMap<K, V> implements Map<K, Collection<V>> {
     /**
      * Underlying map.
@@ -41,11 +43,6 @@ public class CollectionMap<K, V> implements Map<K, Collection<V>> {
 
     public CollectionMap(Map<K, Collection<V>> m) {
         this(m, ArrayList.class);
-    }
-
-    public CollectionMap(Map<K, Collection<V>> m, Class<?> type) {
-        this.map = m;
-        this.type = type;
     }
 
     @Override

@@ -45,6 +45,23 @@ public final class CollectionUtils {
         return !isEmpty(m);
     }
 
+    public static <E> Iterator<E> repeated(E item, int count) {
+        return new RepeatIterator<>(item, count);
+    }
+
+    public static <E> Iterator<E> iterator(@NonNull Enumeration<E> e) {
+        return new EnumerationIterator<>(e);
+    }
+
+    public static <E> Iterable<E> iterable(@NonNull final Iterator<E> i) {
+        return new Iterable<E>() {
+            @Override
+            public Iterator<E> iterator() {
+                return i;
+            }
+        };
+    }
+
     public static <E> E firstOf(Iterable<E> i) {
         if (i == null) {
             return null;
@@ -81,39 +98,8 @@ public final class CollectionUtils {
         return obj;
     }
 
-    public static <E> Iterator<E> iterator(@NonNull Enumeration<E> e) {
-        return new EnumerationIterator<>(e);
-    }
-
-    public static <E> Iterable<E> iterable(@NonNull final Iterator<E> i) {
-        return new Iterable<E>() {
-            @Override
-            public Iterator<E> iterator() {
-                return i;
-            }
-        };
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <E, T> Iterator<T> map(@NonNull Iterable<? extends E> i, @NonNull Function<? super E, ? extends T> transform) {
-        if (i instanceof RandomAccess) {
-            val list = (List<? extends E>) i;
-            val results = new ArrayList<T>();
-            for (int j = 0, end = list.size(); j < end; ++j) {
-                results.add(transform.apply(list.get(j)));
-            }
-            return results.iterator();
-        } else {
-            return map(i.iterator(), transform);
-        }
-    }
-
-    public static <E, T> Iterator<T> map(@NonNull Iterator<? extends E> i, @NonNull Function<? super E, ? extends T> transform) {
-        val results = new LinkedList<T>();
-        while (i.hasNext()) {
-            results.add(transform.apply(i.next()));
-        }
-        return results.iterator();
+    public static <E, T> Iterator<T> map(@NonNull Iterator<E> i, @NonNull Function<? super E, ? extends T> transform) {
+        return new FilterIterator<>(i, transform);
     }
 
     public static <K, V> V getOrElse(Map<K, V> m, K key, Function<K, ? extends V> supplier) {
@@ -257,9 +243,9 @@ public final class CollectionUtils {
         }
     }
 
-    public static <K, V> Map<K, V> mapOf(Object... items) {
+    public static <K, V> Map<K, V> mapOf(Object... objects) {
         val m = new HashMap<K, V>();
-        fillMap(m, items);
+        fillMap(m, objects);
         return Collections.unmodifiableMap(m);
     }
 
@@ -282,14 +268,14 @@ public final class CollectionUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <K, V> void fillMap(@NonNull Map<K, V> m, Object... items) {
-        if (ArrayUtils.isEmpty(items)) {
+    public static <K, V> void fillMap(@NonNull Map<K, V> m, Object... objects) {
+        if (ArrayUtils.isEmpty(objects)) {
             return;
         }
-        val size = items.length;
+        val size = objects.length;
         Validate.require(size % 2 == 0, "length(%d) of objects must % 2 = 0", size);
         for (int i = 0; i < size; i += 2) {
-            m.put((K) items[i], (V) items[i + 1]);
+            m.put((K) objects[i], (V) objects[i + 1]);
         }
     }
 
@@ -301,8 +287,11 @@ public final class CollectionUtils {
         val in = IOUtils.openResource(path, loader);
         if (in != null) {
             val prop = new Properties();
-            prop.load(in);
-            in.close();
+            try {
+                prop.load(in);
+            } finally {
+                in.close();
+            }
             return prop;
         }
         return null;
@@ -328,4 +317,54 @@ public final class CollectionUtils {
         }
     }
 
+    @RequiredArgsConstructor
+    private static class FilterIterator<E, T> implements Iterator<T> {
+        private final Iterator<E> actual;
+        private final Function<? super E, ? extends T> filter;
+
+        @Override
+        public boolean hasNext() {
+            return actual.hasNext();
+        }
+
+        @Override
+        public T next() {
+            return filter.apply(actual.next());
+        }
+
+        @Override
+        public void remove() {
+            actual.remove();
+        }
+    }
+
+    private static class RepeatIterator<E> implements Iterator<E> {
+        private E item;
+        private int count;
+        private int i = 0;
+
+        RepeatIterator(E item, int count) {
+            this.item = item;
+            this.count = count;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return i < count;
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            i++;
+            return item;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
 }

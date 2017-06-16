@@ -16,6 +16,6 @@
 
 package pw.phylame.commons.text;
 
-public interface Converter<T> extends Renderer<T>, Parser<T> {
+public interface Converter<T> extends Render<T>, Parser<T> {
 
 }

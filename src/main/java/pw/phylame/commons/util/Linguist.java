@@ -17,6 +17,7 @@
 package pw.phylame.commons.util;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import pw.phylame.commons.function.Provider;
 import pw.phylame.commons.value.Lazy;
@@ -24,7 +25,11 @@ import pw.phylame.commons.value.Lazy;
 import java.text.MessageFormat;
 import java.util.*;
 
+import static pw.phylame.commons.value.Values.lazy;
+
+@RequiredArgsConstructor
 public final class Linguist {
+    @NonNull
     private final String path;
     private final Locale locale;
     private final ClassLoader loader;
@@ -37,23 +42,13 @@ public final class Linguist {
         this(path, locale, null);
     }
 
-    public Linguist(String path, Locale locale, ClassLoader loader) {
-        this.path = path;
-        this.locale = locale;
-        this.loader = loader;
-    }
-
-    private final Lazy<ResourceBundle> bundle = new Lazy<>(new Provider<ResourceBundle>() {
+    private final Lazy<ResourceBundle> bundle = lazy(new Provider<ResourceBundle>() {
         @Override
         public ResourceBundle provide() throws Exception {
             val l = locale != null ? locale : Locale.getDefault();
-            try {
-                return loader != null ? ResourceBundle.getBundle(path, l, loader) : ResourceBundle.getBundle(path, l);
-            } catch (MissingResourceException e) {
-                return EmptyBundle.EMPTY_BUNDLE;
-            }
+            return loader != null ? ResourceBundle.getBundle(path, l, loader) : ResourceBundle.getBundle(path, l);
         }
-    });
+    }, EmptyBundle.EMPTY_BUNDLE);
 
     public ResourceBundle getBundle() {
         return bundle.get();
@@ -72,7 +67,7 @@ public final class Linguist {
     }
 
     public String tr(@NonNull String key, Object... args) {
-        return MessageFormat.format(getBundle().getString(key), args);
+        return MessageFormat.format(tr(key), args);
     }
 
     public String optTr(@NonNull String key, String fallback, Object... args) {

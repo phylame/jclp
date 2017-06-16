@@ -32,7 +32,6 @@ import java.util.Properties;
  * Utilities for file name operations.
  */
 public final class PathUtils {
-
     private PathUtils() {
     }
 
@@ -43,8 +42,8 @@ public final class PathUtils {
 
     public static Pair<Integer, Integer> split(@NonNull String path) {
         int extpos = path.length(), seppos;
-        char ch;
         boolean extFound = false;
+        char ch;
         for (seppos = extpos - 1; seppos >= 0; --seppos) {
             ch = path.charAt(seppos);
             if (ch == '.' && !extFound) {

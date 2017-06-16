@@ -23,30 +23,30 @@ import java.util.Map;
 
 @Data
 @RequiredArgsConstructor
-public class Pair<A, B> implements Map.Entry<A, B> {
+public final class Pair<A, B> implements Map.Entry<A, B> {
     private final A first;
     private final B second;
 
-    public Pair<A, B> withFirst(A first) {
+    public final Pair<A, B> withFirst(A first) {
         return new Pair<>(first, second);
     }
 
-    public Pair<A, B> withSecond(B second) {
+    public final Pair<A, B> withSecond(B second) {
         return new Pair<>(first, second);
     }
 
     @Override
-    public A getKey() {
+    public final A getKey() {
         return first;
     }
 
     @Override
-    public B getValue() {
+    public final B getValue() {
         return second;
     }
 
     @Override
-    public B setValue(B value) {
+    public final B setValue(B value) {
         throw new UnsupportedOperationException();
     }
 }

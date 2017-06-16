@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package pw.phylame.commons.value;
+package pw.phylame.commons.text;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import pw.phylame.commons.function.Function;
-
-@RequiredArgsConstructor
-public final class Observer<T> implements Value<T> {
-    @NonNull
-    private final Value<T> value;
-
-    private final Function<? super T, ? extends T> observer;
-
-    @Override
-    public final T get() {
-        return observer.apply(value.get());
-    }
+public interface Render<T> {
+    String render(T obj);
 }

@@ -34,8 +34,8 @@ public final class Converters {
     }
 
     public static <T> String render(@NonNull T o, @NonNull Class<? super T> type, boolean forwardingSuptype) {
-        val renderer = ConverterManager.rendererFor(type, forwardingSuptype);
-        return renderer != null ? renderer.render(o) : null;
+        val render = ConverterManager.renderFor(type, forwardingSuptype);
+        return render != null ? render.render(o) : null;
     }
 
     public static <T> T parse(@NonNull String str, @NonNull Class<T> type) {

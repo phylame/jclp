@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package pw.phylame.commons.value;
+package pw.phylame.commons.util;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import pw.phylame.commons.function.Function;
+import java.util.List;
 
-@RequiredArgsConstructor
-public final class Observer<T> implements Value<T> {
-    @NonNull
-    private final Value<T> value;
+public interface Hierarchical<T extends Hierarchical<T>> extends Iterable<T> {
+    T getParent();
 
-    private final Function<? super T, ? extends T> observer;
+    List<T> items();
 
-    @Override
-    public final T get() {
-        return observer.apply(value.get());
-    }
+    int size();
 }

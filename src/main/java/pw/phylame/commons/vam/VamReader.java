@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package pw.phylame.commons.value;
+package pw.phylame.commons.vam;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import pw.phylame.commons.function.Function;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
 
-@RequiredArgsConstructor
-public final class Observer<T> implements Value<T> {
-    @NonNull
-    private final Value<T> value;
+public interface VamReader extends Closeable {
+    String getName();
 
-    private final Function<? super T, ? extends T> observer;
+    String getComment();
 
-    @Override
-    public final T get() {
-        return observer.apply(value.get());
-    }
+    int size();
+
+    VamItem itemFor(String name);
+
+    Iterable<? extends VamItem> items();
+
+    InputStream streamOf(VamItem item) throws IOException;
 }

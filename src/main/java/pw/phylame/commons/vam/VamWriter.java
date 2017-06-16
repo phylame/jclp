@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package pw.phylame.commons;
+package pw.phylame.commons.vam;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-public class Test {
-    public static void main(String[] args) {
-        try (Closeable in = null) {
-            System.out.println(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+public interface VamWriter extends Closeable {
+    void setComment(String comment);
+
+    OutputStream begin(VamItem item) throws IOException;
+
+    void end(VamItem item) throws IOException;
+
+    void write(VamItem item, byte[] data, int off, int len) throws IOException;
+
+    void write(VamItem item, byte[] data) throws IOException;
+
+    void write(VamItem item, InputStream input) throws IOException;
+
+    VamItem mkitem(String name);
 }

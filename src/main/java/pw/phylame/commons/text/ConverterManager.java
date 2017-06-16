@@ -18,19 +18,24 @@ package pw.phylame.commons.text;
 
 import lombok.NonNull;
 import lombok.val;
+import pw.phylame.commons.util.MiscUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.IdentityHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public final class ConverterManager {
+    private ConverterManager() {
+    }
+
     public static final String DISABLE_BUILTIN_CONVERTERS = "commons.converter.disableBuiltins";
 
     private static final Map<Class<?>, Parser<?>> parsers = new IdentityHashMap<>();
 
-    private static final Map<Class<?>, Renderer<?>> renderers = new IdentityHashMap<>();
+    private static final Map<Class<?>, Render<?>> renders = new IdentityHashMap<>();
 
     public static boolean hasParser(Class<?> type) {
         return hasParser(type, false);
@@ -53,19 +58,19 @@ public final class ConverterManager {
         return false;
     }
 
-    public static boolean hasRenderer(Class<?> type) {
-        return hasRenderer(type, false);
+    public static boolean hasRender(Class<?> type) {
+        return hasRender(type, false);
     }
 
-    public static boolean hasRenderer(Class<?> type, boolean forwardingSuptype) {
+    public static boolean hasRender(Class<?> type, boolean forwardingSuptype) {
         if (type == null) {
             return false;
         }
-        if (renderers.containsKey(type)) {
+        if (renders.containsKey(type)) {
             return true;
         }
         if (forwardingSuptype) {
-            for (val clazz : renderers.keySet()) {
+            for (val clazz : renders.keySet()) {
                 if (clazz.isAssignableFrom(type)) {
                     return true;
                 }
@@ -82,11 +87,11 @@ public final class ConverterManager {
         }
     }
 
-    public static <T> void registerRenderer(@NonNull Class<T> type, Renderer<? super T> renderer) {
-        if (renderer == null) {
-            renderers.remove(type);
+    public static <T> void registerRender(@NonNull Class<T> type, Render<? super T> render) {
+        if (render == null) {
+            renders.remove(type);
         } else {
-            renderers.put(type, renderer);
+            renders.put(type, render);
         }
     }
 
@@ -113,23 +118,23 @@ public final class ConverterManager {
         return null;
     }
 
-    public static <T> Renderer<T> rendererFor(Class<T> type) {
-        return rendererFor(type, false);
+    public static <T> Render<T> renderFor(Class<T> type) {
+        return renderFor(type, false);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Renderer<T> rendererFor(Class<T> type, boolean forwardingSuptype) {
+    public static <T> Render<T> renderFor(Class<T> type, boolean forwardingSuptype) {
         if (type == null) {
             return null;
         }
-        val parser = renderers.get(type);
+        val parser = renders.get(type);
         if (parser != null) {
-            return (Renderer<T>) parser;
+            return (Render<T>) parser;
         }
         if (forwardingSuptype) {
-            for (val item : renderers.entrySet()) {
+            for (val item : renders.entrySet()) {
                 if (item.getKey().isAssignableFrom(type)) {
-                    return (Renderer<T>) item.getValue();
+                    return (Render<T>) item.getValue();
                 }
             }
         }
@@ -137,13 +142,13 @@ public final class ConverterManager {
     }
 
     public static void registerBuiltinConverters() {
-        val toStringRenderer = new Renderer<Object>() {
+        val toStringRender = new Render<Object>() {
             @Override
             public String render(Object obj) {
                 return String.valueOf(obj);
             }
         };
-        registerRenderer(Object.class, toStringRenderer);
+        registerRender(Object.class, toStringRender);
         registerParser(Byte.class, new Parser<Byte>() {
             @Override
             public Byte parse(String str) {
@@ -201,8 +206,21 @@ public final class ConverterManager {
                 }
             }
         };
-        registerRenderer(Date.class, dateConverter);
+        registerRender(Date.class, dateConverter);
         registerParser(Date.class, dateConverter);
+        val localeConverter = new Converter<Locale>() {
+            @Override
+            public String render(Locale locale) {
+                return MiscUtils.renderLocale(locale);
+            }
+
+            @Override
+            public Locale parse(String str) {
+                return MiscUtils.parseLocale(str);
+            }
+        };
+        registerRender(Locale.class, localeConverter);
+        registerParser(Locale.class, localeConverter);
     }
 
     static {

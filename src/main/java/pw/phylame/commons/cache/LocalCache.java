@@ -18,7 +18,6 @@ package pw.phylame.commons.cache;
 
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.commons.util.StringUtils;
 import pw.phylame.commons.util.Validate;
 
 import java.io.IOException;

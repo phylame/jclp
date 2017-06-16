@@ -18,6 +18,7 @@ package pw.phylame.commons.util;
 
 public final class Versions {
     public static final int jvmVersion;
+    public static final String jclpVersion = "2.0";
 
     static {
         jvmVersion = Runtime.class.getPackage().getSpecificationVersion().charAt(2) - '0';

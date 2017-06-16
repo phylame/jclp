@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package pw.phylame.commons.value;
+package pw.phylame.commons.function;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import pw.phylame.commons.function.Function;
-
-@RequiredArgsConstructor
-public final class Observer<T> implements Value<T> {
-    @NonNull
-    private final Value<T> value;
-
-    private final Function<? super T, ? extends T> observer;
-
-    @Override
-    public final T get() {
-        return observer.apply(value.get());
-    }
+public interface BiConsumer<T, U> {
+    void consume(T obj1, U obj2);
 }

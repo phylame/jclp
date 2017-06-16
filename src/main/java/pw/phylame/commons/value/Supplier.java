@@ -14,8 +14,21 @@
  * limitations under the License.
  */
 
-package pw.phylame.commons.text;
+package pw.phylame.commons.value;
 
-public interface Renderer<T> {
-    String render(T obj);
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import pw.phylame.commons.function.Provider;
+
+@RequiredArgsConstructor
+public final class Supplier<T> implements Value<T> {
+    @NonNull
+    private final Provider<? extends T> provider;
+
+    @Override
+    @SneakyThrows(Exception.class)
+    public final T get() {
+        return provider.provide();
+    }
 }

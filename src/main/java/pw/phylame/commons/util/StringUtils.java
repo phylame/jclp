@@ -18,8 +18,7 @@ package pw.phylame.commons.util;
 
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.commons.text.Renderer;
-import pw.phylame.commons.text.StringDuplicator;
+import pw.phylame.commons.text.Render;
 import pw.phylame.commons.text.StringJoiner;
 import pw.phylame.commons.value.Pair;
 
@@ -107,8 +106,12 @@ public final class StringUtils {
         return obj != null ? obj.toString() : fallback.toString();
     }
 
-    public static String coalesce(CharSequence cs, Object def) {
-        return isNotEmpty(cs) ? cs.toString() : toString(def);
+    public static String coalesce(CharSequence cs, Object fallback) {
+        return isNotEmpty(cs) ? cs.toString() : toString(fallback);
+    }
+
+    public static String coalesce(CharSequence cs, @NonNull String format, Object... args) {
+        return isNotEmpty(cs) ? cs.toString() : String.format(format, args);
     }
 
     /**
@@ -121,12 +124,6 @@ public final class StringUtils {
         return isEmpty(cs)
                 ? toString(cs)
                 : String.valueOf(Character.toTitleCase(cs.charAt(0))) + cs.subSequence(1, cs.length());
-    }
-
-    public static String uncapitalized(CharSequence cs) {
-        return isEmpty(cs)
-                ? toString(cs)
-                : String.valueOf(Character.toLowerCase(cs.charAt(0))) + cs.subSequence(1, cs.length());
     }
 
     /**
@@ -181,18 +178,13 @@ public final class StringUtils {
         return duplicated(obj, count, null);
     }
 
-    public static <T> String duplicated(T obj, int count, Renderer<? super T> transform) {
+    public static <T> String duplicated(T obj, int count, Render<? super T> transform) {
         if (count <= 0) {
             return "";
         } else if (count == 1) {
             return obj.toString();
         }
-        return StringDuplicator.<T>builder()
-                .object(obj)
-                .count(count)
-                .transform(transform)
-                .build()
-                .dump();
+        return join("", CollectionUtils.repeated(obj, count), transform);
     }
 
     @SafeVarargs
@@ -200,23 +192,18 @@ public final class StringUtils {
         return join(separator, items, null);
     }
 
-    public static <T> String join(CharSequence separator, T[] items, Renderer<? super T> transform) {
+    public static <T> String join(CharSequence separator, T[] items, Render<? super T> transform) {
         if (ArrayUtils.isEmpty(items)) {
             return "";
         }
-        return StringJoiner.<T>builder()
-                .iterator(ArrayUtils.iterator(items))
-                .separator(separator)
-                .transform(transform)
-                .build()
-                .join();
+        return join(separator, ArrayUtils.iterator(items), transform);
     }
 
     public static <T> String join(CharSequence separator, Iterator<T> iterator) {
         return join(separator, iterator, null);
     }
 
-    public static <T> String join(CharSequence separator, Iterator<T> iterator, Renderer<? super T> transform) {
+    public static <T> String join(CharSequence separator, Iterator<T> iterator, Render<? super T> transform) {
         if (iterator == null) {
             return "";
         }

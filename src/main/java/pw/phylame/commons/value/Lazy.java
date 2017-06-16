@@ -22,16 +22,19 @@ import lombok.RequiredArgsConstructor;
 import pw.phylame.commons.function.Provider;
 
 @RequiredArgsConstructor
-public class Lazy<T> implements Value<T> {
+public final class Lazy<T> implements Value<T> {
+    @Getter
+    private volatile boolean initialized = false;
+
     @NonNull
     private final Provider<? extends T> provider;
 
-    private final Value<T> fallback;
-
-    private T value = null;
+    private final Value<? extends T> fallback;
 
     @Getter
-    private boolean initialized = false;
+    private Exception error = null;
+
+    private T value = null;
 
     public Lazy(@NonNull Provider<? extends T> provider) {
         this.provider = provider;
@@ -39,7 +42,7 @@ public class Lazy<T> implements Value<T> {
     }
 
     @Override
-    public T get() {
+    public final T get() {
         if (!initialized) {
             synchronized (this) {
                 if (!initialized) {
@@ -47,6 +50,7 @@ public class Lazy<T> implements Value<T> {
                         value = provider.provide();
                     } catch (Exception e) {
                         value = Values.get(fallback);
+                        error = e;
                     }
                     initialized = true;
                 }
@@ -54,5 +58,4 @@ public class Lazy<T> implements Value<T> {
         }
         return value;
     }
-
 }

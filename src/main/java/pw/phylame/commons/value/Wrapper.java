@@ -19,11 +19,11 @@ package pw.phylame.commons.value;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class Wrapper<T> implements Value<T> {
+public final class Wrapper<T> implements Value<T> {
     private final T value;
 
     @Override
-    public T get() {
+    public final T get() {
         return value;
     }
 }

@@ -29,8 +29,6 @@ public final class DateUtils {
     private DateUtils() {
     }
 
-    private static final String TAG = "DATEs";
-
     public static final String ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static final String RFC1123_FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
@@ -87,7 +85,11 @@ public final class DateUtils {
         return new SimpleDateFormat(ANSIC_FORMAT, Locale.ENGLISH).parse(str);
     }
 
-    public static Date parseDate(String str, Date fallback) {
+    public static String format(@NonNull Date date, @NonNull String format) {
+        return new SimpleDateFormat(format).format(date);
+    }
+
+    public static Date parse(String str, Date fallback) {
         if (StringUtils.isEmpty(str)) {
             return fallback;
         }
@@ -108,10 +110,6 @@ public final class DateUtils {
         } catch (ParseException e) {
             return fallback;
         }
-    }
-
-    public static String format(@NonNull Date date, @NonNull String format) {
-        return new SimpleDateFormat(format).format(date);
     }
 
     public static Date parse(@NonNull String str, @NonNull String format) throws ParseException {

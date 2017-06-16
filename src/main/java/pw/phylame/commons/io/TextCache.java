@@ -59,7 +59,7 @@ public class TextCache implements Closeable {
             tag = new Tag(raf.getFilePointer(), text.length() * 2);
             raf.write(text.getBytes(ENCODING));
         } catch (IOException e) {
-            Log.e(TAG, "",e);
+            Log.e(TAG, "", e);
         }
         return tag;
     }
@@ -79,7 +79,7 @@ public class TextCache implements Closeable {
                     b = null;
                     return str;
                 } catch (IOException e) {
-                    Log.e(TAG, "",e);
+                    Log.e(TAG, "", e);
                     return null;
                 }
             }

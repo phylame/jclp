@@ -31,7 +31,7 @@ public class StringJoiner<T> {
     @Builder.Default
     private CharSequence separator = ",";
 
-    private Renderer<? super T> transform;
+    private Render<? super T> transform;
 
     private CharSequence prefix;
     private CharSequence suffix;

@@ -35,6 +35,10 @@ public final class Values {
         return new Wrapper<>(value);
     }
 
+    public static <T> Supplier<T> supplier(Provider<? extends T> provider) {
+        return new Supplier<>(provider);
+    }
+
     public static <T> Lazy<T> lazy(Provider<? extends T> provider) {
         return new Lazy<>(provider);
     }
