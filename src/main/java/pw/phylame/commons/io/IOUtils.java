@@ -22,6 +22,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import pw.phylame.commons.log.Log;
 import pw.phylame.commons.util.CollectionUtils;
+import pw.phylame.commons.util.MiscUtils;
 import pw.phylame.commons.util.Validate;
 
 import java.io.*;
@@ -551,8 +552,7 @@ public final class IOUtils {
     public static URL resourceFor(@NonNull String path, ClassLoader loader) throws MalformedURLException {
         if (path.startsWith(CLASS_PATH_PREFIX)) {
             val name = path.substring(CLASS_PATH_PREFIX.length());
-//            return loader != null ? loader.getResource(name) : MiscUtils.getContextClassLoader().getResource(name);
-            return null;
+            return loader != null ? loader.getResource(name) : MiscUtils.getContextClassLoader().getResource(name);
         } else if (path.matches("^[a-z]{2,}://.*")) {
             return new URL(path);
         } else {

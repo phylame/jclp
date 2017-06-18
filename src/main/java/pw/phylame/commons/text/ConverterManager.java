@@ -95,6 +95,11 @@ public final class ConverterManager {
         }
     }
 
+    public static <T> void registerConverter(@NonNull Class<T> type, Converter<T> converter) {
+        registerParser(type, converter);
+        registerRender(type, converter);
+    }
+
     public static <T> Parser<T> parserFor(Class<T> type) {
         return parserFor(type, false);
     }

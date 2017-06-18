@@ -16,11 +16,21 @@
 
 package pw.phylame.commons.value;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import pw.phylame.commons.function.Function;
 import pw.phylame.commons.function.Provider;
 
+import java.lang.ref.Reference;
+
 public final class Values {
     private Values() {
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T get(Object value) {
+        return value instanceof Value<?> ? ((Value<T>) value).get() : (T) value;
     }
 
     public static <T> T get(Value<T> value) {
@@ -31,12 +41,20 @@ public final class Values {
         return value != null ? value.get() : fallback;
     }
 
-    public static <T> Wrapper<T> wrap(T value) {
-        return new Wrapper<>(value);
+    public static <T> WrapperValue<T> wrap(T value) {
+        return new WrapperValue<>(value);
     }
 
-    public static <T> Supplier<T> supplier(Provider<? extends T> provider) {
-        return new Supplier<>(provider);
+    public static <T> Value<T> reference(@NonNull Reference<? extends T> reference) {
+        return new ReferenceValue<>(reference);
+    }
+
+    public static <T> ProviderValue<T> provider(@NonNull Provider<? extends T> provider) {
+        return new ProviderValue<>(provider);
+    }
+
+    public static <T> ObserverValue<T> observer(@NonNull Value<T> value, @NonNull Function<? super T, ? extends T> observer) {
+        return new ObserverValue<>(value, observer);
     }
 
     public static <T> Lazy<T> lazy(Provider<? extends T> provider) {
@@ -51,7 +69,46 @@ public final class Values {
         return new Lazy<>(provider, fallback);
     }
 
-    public static <T> Observer<T> observer(Value<T> value, Function<? super T, ? extends T> observer) {
-        return new Observer<>(value, observer);
+    @RequiredArgsConstructor
+    private static final class WrapperValue<T> implements Value<T> {
+        private final T value;
+
+        @Override
+        public T get() {
+            return value;
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static final class ProviderValue<T> implements Value<T> {
+        private final Provider<? extends T> provider;
+
+        @Override
+        @SneakyThrows(Exception.class)
+        public T get() {
+            return provider.provide();
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static final class ReferenceValue<T> implements Value<T> {
+        private final Reference<? extends T> reference;
+
+        @Override
+        public T get() {
+            return reference.get();
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static final class ObserverValue<T> implements Value<T> {
+        private final Value<T> value;
+
+        private final Function<? super T, ? extends T> observer;
+
+        @Override
+        public T get() {
+            return observer.apply(value.get());
+        }
     }
 }

@@ -37,28 +37,34 @@ public final class Validate {
         }
     }
 
-    public static void requireNotNull(Object obj) {
+    public static Object requireNotNull(Object obj) {
         require(obj != null, "object cannot be null");
+        return obj;
     }
 
-    public static void requireNotNull(Object obj, String msg) {
+    public static Object requireNotNull(Object obj, String msg) {
         require(obj != null, msg);
+        return obj;
     }
 
-    public static void requireNotNull(Object obj, String msg, Object... args) {
+    public static Object requireNotNull(Object obj, String msg, Object... args) {
         require(obj != null, msg, args);
+        return obj;
     }
 
-    public static void requireNotEmpty(CharSequence cs) {
+    public static <T extends CharSequence> T requireNotEmpty(T cs) {
         require(isNotEmpty(cs), "string cannot be null or empty");
+        return cs;
     }
 
-    public static void requireNotEmpty(CharSequence cs, String msg) {
+    public static <T extends CharSequence> T requireNotEmpty(T cs, String msg) {
         require(isNotEmpty(cs), msg);
+        return cs;
     }
 
-    public static void requireNotEmpty(CharSequence cs, String msg, Object... args) {
+    public static <T extends CharSequence> T requireNotEmpty(T cs, String msg, Object... args) {
         require(isNotEmpty(cs), msg, args);
+        return cs;
     }
 
     public static void check(boolean condition, String msg) {

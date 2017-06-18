@@ -15,6 +15,7 @@ pw\phylame\commons\text\ConverterManager$4.class
 pw\phylame\commons\function\BiConsumer.class
 pw\phylame\commons\text\Parser.class
 pw\phylame\commons\util\Linguist$EmptyBundle.class
+pw\phylame\commons\value\Values$ReferenceValue.class
 pw\phylame\commons\value\Value.class
 pw\phylame\commons\io\IOUtils$OSWriting.class
 pw\phylame\commons\log\Log.class
@@ -23,10 +24,9 @@ pw\phylame\commons\util\Linguist$1.class
 pw\phylame\commons\io\HttpUtils$Request.class
 pw\phylame\commons\io\IOUtils$RAFWriting.class
 pw\phylame\commons\function\Provider.class
-pw\phylame\commons\value\Supplier.class
+pw\phylame\commons\value\Values$ProviderValue.class
 pw\phylame\commons\condition\CompareCondition.class
 pw\phylame\commons\util\CollectionMap.class
-pw\phylame\commons\Test.class
 pw\phylame\commons\cache\InlineCache$TextHolder.class
 pw\phylame\commons\condition\Conditions.class
 pw\phylame\commons\value\Values.class
@@ -59,7 +59,6 @@ pw\phylame\commons\vam\ZipVamReader.class
 pw\phylame\commons\log\LogLevel.class
 pw\phylame\commons\text\ConverterManager$8.class
 pw\phylame\commons\io\ZLibUtils.class
-pw\phylame\commons\value\Wrapper.class
 pw\phylame\commons\vam\FileVamReader$1.class
 pw\phylame\commons\vam\ZipItem.class
 pw\phylame\commons\util\Exceptions.class
@@ -72,7 +71,6 @@ pw\phylame\commons\text\ConverterManager$5.class
 pw\phylame\commons\util\ArrayUtils.class
 pw\phylame\commons\text\Converter.class
 pw\phylame\commons\function\Predicate.class
-pw\phylame\commons\value\Observer.class
 pw\phylame\commons\function\Consumer.class
 pw\phylame\commons\text\ConverterManager$2.class
 pw\phylame\commons\io\TextCache.class
@@ -81,6 +79,7 @@ pw\phylame\commons\util\Implementor.class
 pw\phylame\commons\vam\VamReader.class
 pw\phylame\commons\function\Function.class
 pw\phylame\commons\text\StringJoiner.class
+pw\phylame\commons\value\Values$ObserverValue.class
 pw\phylame\commons\cache\FileCache$1.class
 pw\phylame\commons\cache\Cacheable.class
 pw\phylame\commons\io\PathUtils$1.class
@@ -94,6 +93,7 @@ pw\phylame\commons\io\IOUtils$FindResourcesAction.class
 pw\phylame\commons\text\ConverterManager.class
 pw\phylame\commons\condition\EqualCondition.class
 pw\phylame\commons\condition\ConditionGroup$1.class
+pw\phylame\commons\value\Values$WrapperValue.class
 pw\phylame\commons\io\ByteUtils$Endian.class
 pw\phylame\commons\util\CollectionUtils$RepeatIterator.class
 pw\phylame\commons\value\Lazy.class
