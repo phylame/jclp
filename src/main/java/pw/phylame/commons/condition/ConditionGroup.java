@@ -18,14 +18,14 @@ package pw.phylame.commons.condition;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import pw.phylame.commons.function.Predicate;
+import pw.phylame.commons.function.Predication;
 
 import java.util.List;
 
 @AllArgsConstructor
-class ConditionGroup<T> implements Predicate<T> {
+class ConditionGroup<T> implements Predication<T> {
     @NonNull
-    private List<? extends Predicate<T>> conditions;
+    private List<? extends Predication<T>> conditions;
 
     @NonNull
     private Trigger trigger;
@@ -36,7 +36,7 @@ class ConditionGroup<T> implements Predicate<T> {
         if (trigger == Trigger.DISABLE || conditions.isEmpty()) {
             return true;
         }
-        for (Predicate<T> cond : conditions) {
+        for (Predication<T> cond : conditions) {
             boolean result = cond.test(value);
             switch (trigger) {
                 case ALL: {

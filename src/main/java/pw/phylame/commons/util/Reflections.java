@@ -20,7 +20,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
-import pw.phylame.commons.function.Predicate;
+import pw.phylame.commons.function.Predication;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -105,11 +105,11 @@ public final class Reflections {
         return null;
     }
 
-    public static List<Field> getFields(@NonNull Class<?> clazz, Predicate<? super Field> Predicate) {
+    public static List<Field> getFields(@NonNull Class<?> clazz, Predication<? super Field> Predication) {
         val fields = new ArrayList<Field>();
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (val field : clazz.getDeclaredFields()) {
-                if (Predicate == null || Predicate.test(field)) {
+                if (Predication == null || Predication.test(field)) {
                     fields.add(field);
                 }
             }
@@ -179,12 +179,12 @@ public final class Reflections {
         return null;
     }
 
-    public static List<Method> getMethods(@NonNull Class<?> clazz, Predicate<? super Method> Predicate) {
+    public static List<Method> getMethods(@NonNull Class<?> clazz, Predication<? super Method> Predication) {
         val methods = new ArrayList<Method>();
         Class<?> copy = clazz;
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (val method : clazz.getDeclaredMethods()) {
-                if (Predicate == null || Predicate.test(method)) {
+                if (Predication == null || Predication.test(method)) {
                     methods.add(method);
                 }
             }
@@ -192,7 +192,7 @@ public final class Reflections {
         if (Versions.jvmVersion >= 8) { // for Java 8 default methods
             for (val iface : copy.getInterfaces()) {
                 for (val method : iface.getMethods()) {
-                    if (Predicate == null || Predicate.test(method)) {
+                    if (Predication == null || Predication.test(method)) {
                         methods.add(method);
                     }
                 }

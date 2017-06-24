@@ -53,6 +53,7 @@ pw\phylame\commons\io\ByteUtils$Render.class
 pw\phylame\commons\io\IOUtils.class
 pw\phylame\commons\io\HttpUtils.class
 pw\phylame\commons\util\RandomUtils.class
+pw\phylame\commons\function\Predication.class
 pw\phylame\commons\vam\FileVamReader.class
 pw\phylame\commons\text\ConverterManager$3.class
 pw\phylame\commons\vam\ZipVamReader.class
@@ -70,7 +71,6 @@ pw\phylame\commons\util\Implementor$1.class
 pw\phylame\commons\text\ConverterManager$5.class
 pw\phylame\commons\util\ArrayUtils.class
 pw\phylame\commons\text\Converter.class
-pw\phylame\commons\function\Predicate.class
 pw\phylame\commons\function\Consumer.class
 pw\phylame\commons\text\ConverterManager$2.class
 pw\phylame\commons\io\TextCache.class

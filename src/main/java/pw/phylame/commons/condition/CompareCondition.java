@@ -19,10 +19,10 @@ package pw.phylame.commons.condition;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import pw.phylame.commons.function.Predicate;
+import pw.phylame.commons.function.Predication;
 
 @RequiredArgsConstructor
-class CompareCondition<T extends Comparable<T>> implements Predicate<T> {
+class CompareCondition<T extends Comparable<T>> implements Predication<T> {
     private final T referred;
 
     @NonNull

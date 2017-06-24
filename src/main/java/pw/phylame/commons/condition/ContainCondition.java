@@ -18,12 +18,12 @@ package pw.phylame.commons.condition;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import pw.phylame.commons.function.Predicate;
+import pw.phylame.commons.function.Predication;
 
 import java.util.Collection;
 
 @RequiredArgsConstructor
-class ContainCondition<T> implements Predicate<T> {
+class ContainCondition<T> implements Predication<T> {
     @NonNull
     private final Collection<T> referred;
 

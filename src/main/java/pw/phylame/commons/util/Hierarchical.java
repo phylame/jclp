@@ -19,9 +19,9 @@ package pw.phylame.commons.util;
 import java.util.List;
 
 public interface Hierarchical<T extends Hierarchical<T>> extends Iterable<T> {
+    int size();
+
     T getParent();
 
-    List<T> items();
-
-    int size();
+    List<T> getChildren();
 }

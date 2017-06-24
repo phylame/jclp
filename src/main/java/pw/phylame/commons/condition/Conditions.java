@@ -16,7 +16,7 @@
 
 package pw.phylame.commons.condition;
 
-import pw.phylame.commons.function.Predicate;
+import pw.phylame.commons.function.Predication;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,55 +25,55 @@ public final class Conditions {
     private Conditions() {
     }
 
-    public static Predicate<Object> isNull() {
+    public static Predication<Object> isNull() {
         return Holder.IS_NULL;
     }
 
-    public static Predicate<Object> isNotNull() {
+    public static Predication<Object> isNotNull() {
         return Holder.IS_NOT_NULL;
     }
 
-    public static <T> Predicate<T> inversed(Predicate<T> source) {
+    public static <T> Predication<T> inversed(Predication<T> source) {
         return new InverseCondition<>(source);
     }
 
-    public static <T> Predicate<T> contained(Collection<T> c) {
+    public static <T> Predication<T> contained(Collection<T> c) {
         return new ContainCondition<>(c);
     }
 
-    public static <T> Predicate<T> combined(List<? extends Predicate<T>> conditions, ConditionGroup.Trigger trigger) {
+    public static <T> Predication<T> combined(List<? extends Predication<T>> conditions, ConditionGroup.Trigger trigger) {
         return new ConditionGroup<>(conditions, trigger);
     }
 
-    public static Predicate<Object> equalTo(Object referred) {
+    public static Predication<Object> equalTo(Object referred) {
         return new EqualCondition(referred);
     }
 
-    public static <T extends Comparable<T>> Predicate<T> lessThan(T referred) {
+    public static <T extends Comparable<T>> Predication<T> lessThan(T referred) {
         return new CompareCondition<>(referred, CompareCondition.Type.LESS_THAN);
     }
 
-    public static <T extends Comparable<T>> Predicate<T> lessThanEqual(T referred) {
+    public static <T extends Comparable<T>> Predication<T> lessThanEqual(T referred) {
         return new CompareCondition<>(referred, CompareCondition.Type.LESS_THAN_EQUAL);
     }
 
-    public static <T extends Comparable<T>> Predicate<T> greaterThan(T referred) {
+    public static <T extends Comparable<T>> Predication<T> greaterThan(T referred) {
         return new CompareCondition<>(referred, CompareCondition.Type.GREATER_THAN);
     }
 
-    public static <T extends Comparable<T>> Predicate<T> greaterThanEqual(T referred) {
+    public static <T extends Comparable<T>> Predication<T> greaterThanEqual(T referred) {
         return new CompareCondition<>(referred, CompareCondition.Type.GREATER_THAN_EQUAL);
     }
 
     private static class Holder {
-        static final Predicate<Object> IS_NULL = new Predicate<Object>() {
+        static final Predication<Object> IS_NULL = new Predication<Object>() {
             @Override
             public boolean test(Object value) {
                 return value == null;
             }
         };
 
-        static final Predicate<Object> IS_NOT_NULL = new Predicate<Object>() {
+        static final Predication<Object> IS_NOT_NULL = new Predication<Object>() {
             @Override
             public boolean test(Object value) {
                 return value != null;

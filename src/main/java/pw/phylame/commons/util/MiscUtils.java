@@ -18,7 +18,7 @@ package pw.phylame.commons.util;
 
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.commons.function.Predicate;
+import pw.phylame.commons.function.Predication;
 import pw.phylame.commons.log.Log;
 
 import java.security.AccessController;
@@ -58,14 +58,14 @@ public final class MiscUtils {
 
     public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull Collection<Integer> indices) {
         for (val index : indices) {
-            item = item.items().get(index < 0 ? item.size() + index : index);
+            item = item.getChildren().get(index < 0 ? item.size() + index : index);
         }
         return item;
     }
 
     public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull int[] indices) {
         for (val index : indices) {
-            item = item.items().get(index < 0 ? item.size() + index : index);
+            item = item.getChildren().get(index < 0 ? item.size() + index : index);
         }
         return item;
     }
@@ -86,15 +86,15 @@ public final class MiscUtils {
         return depth + 1;
     }
 
-    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Predicate<? super T> filter) {
+    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Predication<? super T> filter) {
         return find(item, filter, 0, false);
     }
 
-    public static <T extends Hierarchical<T>> T find(T item, Predicate<? super T> filter, int from, boolean recursion) {
+    public static <T extends Hierarchical<T>> T find(T item, Predication<? super T> filter, int from, boolean recursion) {
         Validate.requireNotNull(item);
         Validate.requireNotNull(filter);
         val end = item.size();
-        val items = item.items();
+        val items = item.getChildren();
         T sub;
         for (int ix = from; ix < end; ++ix) {
             sub = items.get(ix);
@@ -111,12 +111,12 @@ public final class MiscUtils {
         return null;
     }
 
-    public static <T extends Hierarchical<T>> int select(T item, Predicate<? super T> Predicate, List<? super T> result) {
-        return select(item, Predicate, result, -1, true);
+    public static <T extends Hierarchical<T>> int select(T item, Predication<? super T> Predication, List<? super T> result) {
+        return select(item, Predication, result, -1, true);
     }
 
     public static <T extends Hierarchical<T>> int select(@NonNull T item,
-                                                         @NonNull Predicate<? super T> Predicate,
+                                                         @NonNull Predication<? super T> Predication,
                                                          @NonNull List<? super T> result,
                                                          int limit,
                                                          boolean recursion) {
@@ -127,11 +127,11 @@ public final class MiscUtils {
         for (val sub : item) {
             if (count++ == limit) {
                 break;
-            } else if (Predicate.test(sub)) {
+            } else if (Predication.test(sub)) {
                 result.add(sub);
             }
             if (recursion && sub.size() > 0) {
-                count += select(sub, Predicate, result, limit, true);
+                count += select(sub, Predication, result, limit, true);
             }
         }
         return count;

@@ -18,12 +18,12 @@ package pw.phylame.commons.condition;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import pw.phylame.commons.function.Predicate;
+import pw.phylame.commons.function.Predication;
 
 @RequiredArgsConstructor
-class InverseCondition<T> implements Predicate<T> {
+class InverseCondition<T> implements Predication<T> {
     @NonNull
-    private final Predicate<T> source;
+    private final Predication<T> source;
 
     @Override
     public boolean test(T value) {

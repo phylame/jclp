@@ -17,12 +17,12 @@
 package pw.phylame.commons.condition;
 
 import lombok.RequiredArgsConstructor;
-import pw.phylame.commons.function.Predicate;
+import pw.phylame.commons.function.Predication;
 
 import java.util.Objects;
 
 @RequiredArgsConstructor
-class EqualCondition implements Predicate<Object> {
+class EqualCondition implements Predication<Object> {
     private final Object referred;
 
     @Override

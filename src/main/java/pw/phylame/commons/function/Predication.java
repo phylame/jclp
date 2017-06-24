@@ -16,6 +16,6 @@
 
 package pw.phylame.commons.function;
 
-public interface Predicate<T> {
+public interface Predication<T> {
     boolean test(T arg);
 }
