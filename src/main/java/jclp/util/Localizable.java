@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package pw.phylame.commons.function;
+package jclp.util;
 
-public interface Consumer<T> {
-    void accept(T obj);
+import java.util.MissingResourceException;
+
+public interface Localizable {
+    String tr(String key) throws MissingResourceException;
+
+    String optTr(String key, String fallback);
+
+    String tr(String key, Object... args) throws MissingResourceException;
+
+    String optTr(String key, String fallback, Object... args);
 }
