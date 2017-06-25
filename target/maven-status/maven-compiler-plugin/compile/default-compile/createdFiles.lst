@@ -1,13 +1,9 @@
-jclp\text\ConverterManager$5.class
 jclp\util\MiscUtils.class
 jclp\vdm\FileVdmEntry.class
 jclp\util\Reflections$Invocation$InvocationBuilder.class
 jclp\io\RAFInputStream.class
 jclp\vdm\ZipVdmReader.class
 jclp\util\ArrayUtils$ArrayIterator.class
-jclp\util\Implementor$1.class
-jclp\text\ConverterManager$10.class
-jclp\text\ConverterManager$8.class
 jclp\text\StringJoiner$StringJoinerBuilder.class
 jclp\io\IOUtils$Writing.class
 jclp\cache\InlineCache.class
@@ -27,7 +23,6 @@ jclp\text\StringJoiner.class
 jclp\function\Function.class
 jclp\io\FileUtils.class
 jclp\cache\InlineCache$TextHolder.class
-jclp\text\ConverterManager$2.class
 jclp\vdm\ZipVdmEntry.class
 jclp\function\Predicate.class
 jclp\io\IOUtils$OSWriting.class
@@ -50,14 +45,12 @@ jclp\util\CollectionUtils$1.class
 jclp\condition\Conditions$Holder.class
 jclp\io\IOUtils.class
 jclp\text\Parser.class
-jclp\text\ConverterManager$1.class
 jclp\function\BiFunction.class
 jclp\condition\InverseCondition.class
 jclp\log\Facade.class
 jclp\io\ZLibUtils.class
 jclp\util\CollectionUtils.class
 jclp\text\ConverterManager.class
-jclp\text\ConverterManager$7.class
 jclp\vdm\FileVdmReader$1.class
 jclp\util\MiscUtils$1.class
 jclp\util\RandomUtils.class
@@ -70,11 +63,10 @@ jclp\text\FunctionRender.class
 jclp\util\Linguist.class
 jclp\condition\CompareCondition$Type.class
 jclp\function\Provider.class
-jclp\text\ConverterManager$6.class
 jclp\util\Linguist$1.class
 jclp\cache\RangeTag.class
 jclp\vdm\FileVdmWriter.class
-jclp\text\ConverterManager$9.class
+jclp\value\Triple.class
 jclp\value\Values$ReferenceValue.class
 jclp\io\Lz77Utils.class
 jclp\value\Lazy.class
@@ -100,7 +92,6 @@ jclp\value\Values$ObserverValue.class
 jclp\io\ByteUtils.class
 jclp\io\IOUtils$RAFWriting.class
 jclp\io\IOUtils$FindResourcesAction.class
-jclp\text\ConverterManager$3.class
 jclp\vdm\ZipVdmReader$1.class
 jclp\cache\Cacheable.class
 jclp\cache\LocalCache.class
@@ -108,7 +99,6 @@ jclp\io\HttpUtils.class
 jclp\util\CollectionUtils$FilterIterator.class
 jclp\value\Pair.class
 jclp\io\ByteUtils$Render.class
-jclp\text\ConverterManager$4.class
 jclp\io\IOUtils$Reading.class
 jclp\condition\CompareCondition.class
 jclp\condition\ConditionGroup$Trigger.class
