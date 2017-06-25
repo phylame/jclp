@@ -22,25 +22,25 @@ import java.util.MissingResourceException;
 
 public class LocalizableWrapper implements Localizable {
     @Setter
-    private Localizable localizable;
+    private Localizable translator;
 
     @Override
     public String tr(String key) throws MissingResourceException {
-        return localizable.tr(key);
+        return translator.tr(key);
     }
 
     @Override
     public String optTr(String key, String fallback) {
-        return localizable.optTr(key, fallback);
+        return translator.optTr(key, fallback);
     }
 
     @Override
     public String tr(String key, Object... args) throws MissingResourceException {
-        return localizable.tr(key, args);
+        return translator.tr(key, args);
     }
 
     @Override
     public String optTr(String key, String fallback, Object... args) {
-        return localizable.optTr(key, fallback, args);
+        return translator.optTr(key, fallback, args);
     }
 }
