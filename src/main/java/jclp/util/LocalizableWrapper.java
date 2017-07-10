@@ -26,21 +26,31 @@ public class LocalizableWrapper implements Localizable {
 
     @Override
     public String tr(String key) throws MissingResourceException {
+        checkTranslator();
         return translator.tr(key);
     }
 
     @Override
     public String optTr(String key, String fallback) {
+        checkTranslator();
         return translator.optTr(key, fallback);
     }
 
     @Override
     public String tr(String key, Object... args) throws MissingResourceException {
+        checkTranslator();
         return translator.tr(key, args);
     }
 
     @Override
     public String optTr(String key, String fallback, Object... args) {
+        checkTranslator();
         return translator.optTr(key, fallback, args);
+    }
+
+    private void checkTranslator() {
+        if (translator == null) {
+            throw new IllegalStateException("translator is not initialized, call setTranslator firstly");
+        }
     }
 }
