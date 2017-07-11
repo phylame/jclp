@@ -272,6 +272,14 @@ public final class IOUtils {
         return readerFor(new FileInputStream(file), encoding);
     }
 
+    public static Reader readerFor(URL url) throws IOException {
+        return readerFor(url, null);
+    }
+
+    public static Reader readerFor(URL url, String encoding) throws IOException {
+        return readerFor(url.openStream(), encoding);
+    }
+
     @SneakyThrows(UnsupportedEncodingException.class)
     public static Reader readerFor(InputStream in) {
         return readerFor(in, null);
