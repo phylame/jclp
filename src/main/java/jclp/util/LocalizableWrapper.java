@@ -18,6 +18,7 @@ package jclp.util;
 
 import lombok.Setter;
 
+import java.text.MessageFormat;
 import java.util.MissingResourceException;
 
 public class LocalizableWrapper implements Localizable {
@@ -32,8 +33,9 @@ public class LocalizableWrapper implements Localizable {
 
     @Override
     public String optTr(String key, String fallback) {
-        checkTranslator();
-        return translator.optTr(key, fallback);
+        return translator != null
+                ? translator.optTr(key, fallback)
+                : fallback;
     }
 
     @Override
@@ -44,8 +46,9 @@ public class LocalizableWrapper implements Localizable {
 
     @Override
     public String optTr(String key, String fallback, Object... args) {
-        checkTranslator();
-        return translator.optTr(key, fallback, args);
+        return translator != null
+                ? translator.optTr(key, fallback, args)
+                : MessageFormat.format(fallback, args);
     }
 
     private void checkTranslator() {
