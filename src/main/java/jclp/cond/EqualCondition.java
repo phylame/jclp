@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
+package jclp.cond;
+
 import jclp.function.Predicate;
-import jclp.io.IOUtils;
-import jclp.setting.Settings;
-import lombok.val;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
-/**
- * Created by Lateray on 2017-7-11.
- */
-public class Test {
-    public static void main(String[] args) throws IOException {
-        val settings = new Settings("!app");
-        Map<String, Predicate<Object>> c = new HashMap<>();
-        settings.loadDependency(IOUtils.readerFor(Test.class.getResource("/pref.dep")));
-        settings.setSection("app.");
-        System.out.println(settings.isEnable("log.level"));
+
+@ToString
+@RequiredArgsConstructor
+class EqualCondition<T> implements Predicate<T> {
+    private final T referred;
+
+    @Override
+    public boolean test(T value) {
+        return Objects.equals(value, referred);
     }
 }

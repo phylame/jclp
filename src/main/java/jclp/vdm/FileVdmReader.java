@@ -24,9 +24,12 @@ import lombok.val;
 
 import java.io.*;
 import java.util.LinkedList;
+import java.util.List;
 
 public class FileVdmReader implements VdmReader {
     private final File dir;
+    private volatile boolean closed = false;
+    private final List<FileInputStream> inputs = new LinkedList<>();
 
     public FileVdmReader(@NonNull File dir) throws FileNotFoundException {
         this.dir = dir;
@@ -35,6 +38,19 @@ public class FileVdmReader implements VdmReader {
 
     @Override
     public void close() throws IOException {
+        if (closed) {
+            return;
+        }
+        synchronized (this) {
+            if (closed) {
+                return;
+            }
+            closed = true;
+            for (val input : inputs) {
+                input.close();
+            }
+            inputs.clear();
+        }
     }
 
     @Override
@@ -44,6 +60,7 @@ public class FileVdmReader implements VdmReader {
 
     @Override
     public String getComment() {
+        ensureOpen();
         try {
             return FileUtils.toString(new File(this.dir, FileVdmEntry.COMMENT_FILE));
         } catch (IOException e) {
@@ -53,21 +70,27 @@ public class FileVdmReader implements VdmReader {
 
     @Override
     public FileVdmEntry entryFor(@NonNull String name) {
+        ensureOpen();
         val file = new File(dir, name);
-        return file.exists() ? new FileVdmEntry(file, this) : null;
+        return file.exists()
+                ? new FileVdmEntry(file, this)
+                : null;
     }
 
     @Override
-    public InputStream streamOf(@NonNull VdmEntry entry) throws IOException {
-        val fve = (FileVdmEntry) entry;
-        if (fve.fvr == null || fve.fvr.get() != this) {
-            return null;
-        }
-        return new FileInputStream(fve.file);
+    public InputStream streamFor(@NonNull VdmEntry entry) throws IOException {
+        ensureOpen();
+        val fileEntry = (FileVdmEntry) entry;
+        val input = fileEntry.vdmReader != null && fileEntry.vdmReader.get() == this
+                ? new FileInputStream(fileEntry.file)
+                : null;
+        inputs.add(input);
+        return input;
     }
 
     @Override
     public Iterable<FileVdmEntry> entries() {
+        ensureOpen();
         val items = new LinkedList<FileVdmEntry>();
         FileUtils.walkDir(dir, new Consumer<File>() {
             @Override
@@ -82,9 +105,19 @@ public class FileVdmReader implements VdmReader {
 
     @Override
     public int size() {
+        ensureOpen();
         val counter = new FileCounter();
         FileUtils.walkDir(dir, counter);
         return counter.count;
+    }
+
+    @Override
+    public String toString() {
+        return "file://" + dir.getPath();
+    }
+
+    private void ensureOpen() {
+        Validate.check(!closed, "closed");
     }
 
     private static class FileCounter implements Consumer<File> {
@@ -96,10 +129,5 @@ public class FileVdmReader implements VdmReader {
                 ++count;
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return "file://" + dir.getPath();
     }
 }

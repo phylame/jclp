@@ -23,11 +23,14 @@ import lombok.NonNull;
 import lombok.val;
 
 import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FileVdmWriter implements VdmWriter {
     private static final String TAG = "FileVdmWriter";
 
     private final File dir;
+    private final List<FileOutputStream> outputs = new LinkedList<>();
 
     public FileVdmWriter(@NonNull File dir) throws IOException {
         this.dir = dir;
@@ -36,7 +39,10 @@ public class FileVdmWriter implements VdmWriter {
 
     @Override
     public void close() throws IOException {
-
+        for (val output : outputs) {
+            output.close();
+        }
+        outputs.clear();
     }
 
     @Override
@@ -52,15 +58,17 @@ public class FileVdmWriter implements VdmWriter {
         if (!dir.mkdirs()) {
             throw new IOException("Cannot create dir " + dir);
         }
-        return new FileOutputStream(file);
+        val output = new FileOutputStream(file);
+        outputs.add(output);
+        return output;
     }
 
     @Override
     public OutputStream begin(@NonNull VdmEntry entry) throws IOException {
-        val fve = (FileVdmEntry) entry;
-        Validate.check(fve.stream == null, "entry is already begin for output stream");
-        fve.stream = openOutput(fve.file);
-        return fve.stream;
+        val fileEntry = (FileVdmEntry) entry;
+        Validate.check(fileEntry.stream == null, "entry is already begin for output stream");
+        fileEntry.stream = openOutput(fileEntry.file);
+        return fileEntry.stream;
     }
 
     @Override

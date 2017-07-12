@@ -60,7 +60,7 @@ public class ZipVdmReader implements VdmReader {
     }
 
     @Override
-    public InputStream streamOf(@NonNull VdmEntry entry) throws IOException {
+    public InputStream streamFor(@NonNull VdmEntry entry) throws IOException {
         return zip.getInputStream(((ZipVdmEntry) entry).entry);
     }
 

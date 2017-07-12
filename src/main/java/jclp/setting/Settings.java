@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp.setting;
 
+import jclp.cond.Conditions;
+import jclp.io.IOUtils;
+import jclp.log.Log;
 import jclp.text.Converters;
+import jclp.util.CollectionUtils;
+import jclp.util.StringUtils;
+import jclp.util.Validate;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -24,7 +30,8 @@ import lombok.val;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.io.Reader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -37,16 +44,22 @@ public class Settings {
     private static final String FILE_EXTENSION = ".pref";
 
     @Getter
+    private final String path;
+
+    @Getter
     @Setter
     private String comment = null;
+
+    @Setter
+    private String section = null;
 
     @Getter
     private boolean modified = false;
 
-    private final Map<String, String> values = new LinkedHashMap<>();
+    private final Map<String, String> values = new HashMap<>();
 
     @Getter
-    private final String path;
+    private Map<String, Dependency> dependencies = new HashMap<>();
 
     public Settings(String path) throws IOException {
         this(path, true);
@@ -63,16 +76,22 @@ public class Settings {
         }
     }
 
+    private String convkey(String key) {
+        return StringUtils.isNotEmpty(section)
+                ? section + key
+                : key;
+    }
+
     public boolean contains(String key) {
-        return values.containsKey(key);
+        return values.containsKey(convkey(key));
     }
 
     public String get(String key) {
-        return values.get(key);
+        return values.get(convkey(key));
     }
 
     public <T> T get(String key, @NonNull Class<T> type) {
-        val value = values.get(key);
+        val value = values.get(convkey(key));
         if (value == null) {
             return null;
         }
@@ -85,26 +104,26 @@ public class Settings {
 
     public void set(@NonNull String key, @NonNull Object value) {
         if (value instanceof String) {
-            values.put(key, value.toString());
+            values.put(convkey(key), value.toString());
         } else {
             val str = Converters.render(value, true);
             if (str == null) {
                 throw new IllegalArgumentException("Cannot convert " + value + " to string");
             }
-            values.put(key, str);
+            values.put(convkey(key), str);
         }
         modified = true;
     }
 
     public <T> void set(@NonNull String key, @NonNull T value, @NonNull Class<T> type) {
         if (value instanceof String) {
-            values.put(key, value.toString());
+            values.put(convkey(key), value.toString());
         } else {
             val str = Converters.render(value, type, true);
             if (str == null) {
                 throw new IllegalArgumentException("Cannot convert " + value + " to string");
             }
-            values.put(key, str);
+            values.put(convkey(key), str);
         }
         modified = true;
     }
@@ -137,7 +156,7 @@ public class Settings {
     }
 
     public String remove(String key) {
-        val value = values.remove(key);
+        val value = values.remove(convkey(key));
         modified = true;
         return value;
     }
@@ -145,6 +164,42 @@ public class Settings {
     public void clear() {
         values.clear();
         modified = true;
+    }
+
+    public final boolean isEnable(String key) {
+        if (CollectionUtils.isEmpty(dependencies)) {
+            return true;
+        }
+        val dependency = dependencies.get(convkey(key));
+        return dependency == null || isEnable(dependency.key) && dependency.isEnable(values);
+    }
+
+    public final void loadDependency(Reader reader) throws IOException {
+        val br = IOUtils.buffered(reader);
+        String line;
+        while ((line = br.readLine()) != null) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+            }
+            int index = line.indexOf("->");
+            if (index == -1) {
+                Log.t(TAG, "not found '->' in line");
+                continue;
+            }
+            val key = line.substring(0, index);
+            line = line.substring(index + 2);
+            index = line.indexOf("@");
+            if (index == -1) {
+                Log.t(TAG, "not found '@' in line");
+                continue;
+            }
+            val condition = Conditions.forPattern(line.substring(index + 1));
+            if (condition != null) {
+                dependencies.put(key, new Dependency(line.substring(0, index), condition));
+            }
+        }
+        System.out.println(dependencies);
     }
 
     /**

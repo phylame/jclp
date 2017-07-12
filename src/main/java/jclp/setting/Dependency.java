@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package jclp.condition;
+package jclp.setting;
 
+import jclp.function.Predicate;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import jclp.function.Predicate;
+import lombok.ToString;
 
+import java.util.Map;
+
+@ToString
 @RequiredArgsConstructor
-class InverseCondition<T> implements Predicate<T> {
+public class Dependency {
     @NonNull
-    private final Predicate<T> source;
+    final String key;
+    @NonNull
+    private final Predicate<? super String> condition;
 
-    @Override
-    public boolean test(T value) {
-        return !source.test(value);
+    boolean isEnable(@NonNull Map<String, String> values) {
+        return condition.test(values.get(key));
     }
 }

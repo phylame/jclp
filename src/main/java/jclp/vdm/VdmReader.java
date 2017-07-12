@@ -31,5 +31,5 @@ public interface VdmReader extends Closeable {
 
     Iterable<? extends VdmEntry> entries();
 
-    InputStream streamOf(VdmEntry entry) throws IOException;
+    InputStream streamFor(VdmEntry entry) throws IOException;
 }

@@ -14,38 +14,40 @@
  * limitations under the License.
  */
 
-package jclp.condition;
+package jclp.cond;
 
+import jclp.function.Predicate;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
-import jclp.function.Predicate;
+import lombok.ToString;
 
+import java.util.Comparator;
+import java.util.Objects;
+
+
+@ToString
 @RequiredArgsConstructor
-class CompareCondition<T extends Comparable<T>> implements Predicate<T> {
+class CompareCondition<T> implements Predicate<T> {
     private final T referred;
-
     @NonNull
-    private final Type type;
+    private final Conditions.CompareType type;
+    @NonNull
+    private final Comparator<? super T> comparator;
 
     @Override
     public boolean test(T value) {
-        val ret = referred == value ? 0 : referred.compareTo(value);
+        int result = Objects.compare(value, referred, comparator);
         switch (type) {
-            case EQUAL:
-                return ret == 0;
-            case LESS_THAN:
-                return ret > 0;
-            case LESS_THAN_EQUAL:
-                return ret >= 0;
-            case GREATER_THAN:
-                return ret < 0;
+            case EQ:
+                return result == 0;
+            case LT:
+                return result < 0;
+            case GT:
+                return result > 0;
+            case LE:
+                return result <= 0;
             default:
-                return ret <= 0;
+                return result >= 0;
         }
-    }
-
-    public enum Type {
-        EQUAL, LESS_THAN, LESS_THAN_EQUAL, GREATER_THAN, GREATER_THAN_EQUAL
     }
 }

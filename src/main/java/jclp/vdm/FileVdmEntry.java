@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
 public class FileVdmEntry implements VdmEntry {
     static final String COMMENT_FILE = "__FVECOMM__";
 
-    final WeakReference<? extends FileVdmReader> fvr;
+    final WeakReference<? extends FileVdmReader> vdmReader;
 
     OutputStream stream;
 
@@ -37,9 +37,9 @@ public class FileVdmEntry implements VdmEntry {
         Validate.require(!file.isAbsolute(), "Relative path is required: %s", file.getPath());
     }
 
-    FileVdmEntry(@NonNull File file, FileVdmReader fvr) {
+    FileVdmEntry(@NonNull File file, FileVdmReader vdmReader) {
         this.file = file;
-        this.fvr = fvr != null ? new WeakReference<>(fvr) : null;
+        this.vdmReader = vdmReader != null ? new WeakReference<>(vdmReader) : null;
     }
 
     @Override

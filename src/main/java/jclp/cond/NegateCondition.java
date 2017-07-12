@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package jclp.condition;
+package jclp.cond;
 
+import jclp.function.Predicate;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import jclp.function.Predicate;
+import lombok.ToString;
 
-import java.util.Collection;
-
+@ToString
 @RequiredArgsConstructor
-class ContainCondition<T> implements Predicate<T> {
+class NegateCondition<T> implements Predicate<T> {
     @NonNull
-    private final Collection<T> referred;
+    private final Predicate<T> condition;
 
     @Override
-    public boolean test(T value) {
-        return referred.contains(value);
+    public boolean test(T obj) {
+        return !condition.test(obj);
     }
 }

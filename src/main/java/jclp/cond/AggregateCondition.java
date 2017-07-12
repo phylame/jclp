@@ -14,52 +14,53 @@
  * limitations under the License.
  */
 
-package jclp.condition;
+package jclp.cond;
 
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import jclp.function.Predicate;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.val;
 
-import java.util.List;
+import java.util.Collection;
 
-@AllArgsConstructor
-class ConditionGroup<T> implements Predicate<T> {
+
+@ToString
+@RequiredArgsConstructor
+class AggregateCondition<T> implements Predicate<T> {
     @NonNull
-    private List<? extends Predicate<T>> conditions;
-
+    private final Conditions.AggregateType type;
     @NonNull
-    private Trigger trigger;
+    private final Collection<Predicate<? super T>> conditions;
 
     @Override
-    @SuppressWarnings("incomplete-switch")
     public boolean test(T value) {
-        if (trigger == Trigger.DISABLE || conditions.isEmpty()) {
+        if (type == Conditions.AggregateType.DISABLE || conditions.isEmpty()) {
             return true;
         }
-        for (Predicate<T> cond : conditions) {
-            boolean result = cond.test(value);
-            switch (trigger) {
-                case ALL: {
+        for (val condition : conditions) {
+            val result = condition.test(value);
+            switch (type) {
+                case ALL:
                     if (!result) {
                         return false;
                     }
-                }
-                break;
-                case ANY: {
+                    break;
+                case ANY:
                     if (result) {
                         return true;
                     }
-                }
-                break;
-                case NONE: {
+                    break;
+                case NONE:
                     if (result) {
                         return false;
                     }
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
-        switch (trigger) {
+        switch (type) {
             case ALL:
                 return true;
             case ANY:
@@ -69,9 +70,5 @@ class ConditionGroup<T> implements Predicate<T> {
             default:
                 return true;
         }
-    }
-
-    public enum Trigger {
-        ALL, ANY, NONE, DISABLE
     }
 }
