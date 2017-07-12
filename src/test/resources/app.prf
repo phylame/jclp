@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-app.mode=info
+app.mode=infoz
 app.plugin.enable=true
 app.verbose=echo
 app.log.level=info

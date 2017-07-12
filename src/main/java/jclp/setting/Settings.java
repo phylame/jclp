@@ -31,6 +31,7 @@ import lombok.val;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -41,7 +42,8 @@ import static jclp.io.IOUtils.*;
 public class Settings {
     private static final String TAG = "Settings";
     private static final String ENCODING = "UTF-8";
-    private static final String FILE_EXTENSION = ".pref";
+    private static final String SETTINGS_EXTENSION = ".prf";
+    private static final String DEPENDENCY_EXTENSION = ".dep";
 
     @Getter
     private final String path;
@@ -67,8 +69,8 @@ public class Settings {
 
     public Settings(String path, boolean loading) throws IOException {
         Validate.requireNotEmpty(path);
-        if (!path.endsWith(FILE_EXTENSION)) {
-            path += FILE_EXTENSION;
+        if (!path.endsWith(SETTINGS_EXTENSION)) {
+            path += SETTINGS_EXTENSION;
         }
         this.path = path;
         if (loading) {
@@ -199,14 +201,13 @@ public class Settings {
                 dependencies.put(key, new Dependency(line.substring(0, index), condition));
             }
         }
-        System.out.println(dependencies);
     }
 
     /**
      * Loads values from settings file {@code path}.
      */
     public final void load() throws IOException {
-        val url = resourceFor(path);
+        URL url = resourceFor(path);
         if (url == null) {
             return;
         }
@@ -216,6 +217,13 @@ public class Settings {
             for (val e : props.entrySet()) {
                 values.put(e.getKey().toString(), e.getValue().toString());
             }
+        }
+        url = resourceFor(path + DEPENDENCY_EXTENSION);
+        if (url == null) {
+            return;
+        }
+        try (val r = readerFor(url)) {
+            loadDependency(r);
         }
     }
 
@@ -239,5 +247,10 @@ public class Settings {
             w.append("#Encoding: ").append(ENCODING).append(System.lineSeparator());
             props.store(w, comment);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Settings{path='" + path + '\'' + ", modified=" + modified + '}';
     }
 }
