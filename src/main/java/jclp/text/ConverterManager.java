@@ -149,6 +149,7 @@ public final class ConverterManager {
     public static void registerDefaults() {
         registerConverter(Object.class, new DefaultConverter<>(Object.class));
         registerConverter(Locale.class, new DefaultConverter<>(Locale.class));
+        registerParser(String.class, new DefaultConverter<>(String.class));
         registerConverter(Date.class, new DefaultConverter<>(Date.class));
         DefaultConverter<Byte> bc = new DefaultConverter<>(Byte.class);
         registerParser(Byte.class, bc);
@@ -185,7 +186,9 @@ public final class ConverterManager {
 
         @Override
         public T parse(@NonNull String str) {
-            if (type == Byte.class) {
+            if (type == String.class) {
+                return type.cast(str);
+            } else if (type == Byte.class) {
                 return type.cast(Byte.decode(str));
             } else if (type == Short.class) {
                 return type.cast(Short.decode(str));
