@@ -87,6 +87,10 @@ public final class ConverterManager {
         }
     }
 
+    public static <T extends Enum<T>> void registerParser(@NonNull Class<T> type) {
+        registerParser(type, new EnumParser<>(type));
+    }
+
     public static <T> void registerRender(@NonNull Class<T> type, Render<? super T> render) {
         if (render == null) {
             renders.remove(type);
