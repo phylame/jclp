@@ -74,8 +74,6 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
             throw new IllegalArgumentException("bufbitlen size must > 0");
         }
 
-        boolean append = !mode.equals("r");
-
         initfilelen = super.length();
         fileendpos = initfilelen - 1;
         curpos = super.getFilePointer();

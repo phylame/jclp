@@ -267,7 +267,7 @@ public final class Implementor<T> {
             this.clazz = clazz;
         }
 
-        ImpHolder reset() {
+        ImpHolder<T> reset() {
             path = null;
             clazz = null;
             cache = null;
