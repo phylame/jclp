@@ -16,6 +16,8 @@
 
 package jclp.log;
 
+import jclp.util.Exceptions;
+
 import java.text.MessageFormat;
 
 public class DefaultFacade implements Facade {
@@ -41,14 +43,14 @@ public class DefaultFacade implements Facade {
 
     @Override
     public void log(String tag, Level level, String msg, Throwable t) {
-        print(level, format(tag, level, msg + t));
+        print(level, format(tag, level, msg + "\n" + Exceptions.dumpToString(t)));
     }
 
     private void print(Level level, String msg) {
         if (level.getCode() < Level.WARN.getCode()) {
-            System.out.println(msg);
+            System.out.print(msg);
         } else {
-            System.err.println(msg);
+            System.err.print(msg);
         }
     }
 

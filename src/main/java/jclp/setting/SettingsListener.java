@@ -16,23 +16,8 @@
 
 package jclp.setting;
 
-import jclp.function.Predicate;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+public interface SettingsListener {
+    void valueChanged(String key, Object oldValue, Object newValue);
 
-import java.util.Map;
-
-@ToString
-@RequiredArgsConstructor
-public class Dependency {
-    @NonNull
-    final String key;
-
-    @NonNull
-    private final Predicate<? super String> condition;
-
-    boolean isEnable(@NonNull Map<String, String> values) {
-        return condition.test(values.get(key));
-    }
+    void valueRemove(String key, Object value);
 }

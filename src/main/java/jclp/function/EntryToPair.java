@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package jclp.setting;
+package jclp.function;
 
-import jclp.function.Predicate;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import jclp.value.Pair;
 
 import java.util.Map;
 
-@ToString
-@RequiredArgsConstructor
-public class Dependency {
-    @NonNull
-    final String key;
-
-    @NonNull
-    private final Predicate<? super String> condition;
-
-    boolean isEnable(@NonNull Map<String, String> values) {
-        return condition.test(values.get(key));
+public class EntryToPair<K, V> implements Function<Map.Entry<K, V>, Pair<K, V>> {
+    @Override
+    public Pair<K, V> apply(Map.Entry<K, V> e) {
+        return new Pair<>(e.getKey(), e.getValue());
     }
 }

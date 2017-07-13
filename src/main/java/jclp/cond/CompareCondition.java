@@ -17,6 +17,7 @@
 package jclp.cond;
 
 import jclp.function.Predicate;
+import jclp.log.Log;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -28,6 +29,8 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 class CompareCondition<T> implements Predicate<T> {
+    private static final String TAG = "CompareCondition";
+
     private final T referred;
     @NonNull
     private final Conditions.CompareType type;
@@ -36,7 +39,13 @@ class CompareCondition<T> implements Predicate<T> {
 
     @Override
     public boolean test(T value) {
-        int result = Objects.compare(value, referred, comparator);
+        int result;
+        try {
+            result = Objects.compare(value, referred, comparator);
+        } catch (RuntimeException e) {
+            Log.t(TAG, "error when comparing", e);
+            return false;
+        }
         switch (type) {
             case EQ:
                 return result == 0;

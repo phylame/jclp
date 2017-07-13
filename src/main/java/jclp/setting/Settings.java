@@ -16,13 +16,11 @@
 
 package jclp.setting;
 
-import jclp.cond.Conditions;
-import jclp.io.IOUtils;
-import jclp.log.Log;
+import jclp.function.EntryToPair;
 import jclp.text.Converters;
-import jclp.util.CollectionUtils;
 import jclp.util.StringUtils;
 import jclp.util.Validate;
+import jclp.value.Pair;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -30,14 +28,11 @@ import lombok.val;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import static jclp.io.IOUtils.*;
+import static jclp.util.CollectionUtils.map;
 
 public class Settings {
     private static final String TAG = "Settings";
@@ -60,8 +55,10 @@ public class Settings {
 
     private final Map<String, String> values = new HashMap<>();
 
+    private final Set<SettingsListener> listeners = new HashSet<>();
+
     @Getter
-    private Map<String, Dependency> dependencies = new HashMap<>();
+    private final Dependencies dependencies = new Dependencies();
 
     public Settings(String path) throws IOException {
         this(path, true);
@@ -89,52 +86,48 @@ public class Settings {
     }
 
     public String get(String key) {
-        return values.get(convkey(key));
+        return getRaw(convkey(key));
     }
 
     public <T> T get(String key, @NonNull Class<T> type) {
-        val value = values.get(convkey(key));
+        val value = getRaw(convkey(key));
         if (value == null) {
             return null;
         }
         return Converters.parse(value, type, true);
     }
 
-    public Set<Map.Entry<String, String>> getValues() {
-        return values.entrySet();
+    public Iterator<Pair<String, String>> getValues() {
+        return map(values.entrySet().iterator(), new EntryToPair<String, String>());
     }
 
-    public void set(@NonNull String key, @NonNull Object value) {
-        if (value instanceof String) {
-            values.put(convkey(key), value.toString());
-        } else {
-            val str = Converters.render(value, true);
-            if (str == null) {
-                throw new IllegalArgumentException("Cannot convert " + value + " to string");
-            }
-            values.put(convkey(key), str);
-        }
+    public void set(@NonNull String key, @NonNull String value) {
+        key = convkey(key);
+        fireValueChanged(key, setRaw(key, value), value);
         modified = true;
     }
 
     public <T> void set(@NonNull String key, @NonNull T value, @NonNull Class<T> type) {
+        key = convkey(key);
         if (value instanceof String) {
-            values.put(convkey(key), value.toString());
+            fireValueChanged(key, setRaw(key, (String) value), value);
         } else {
             val str = Converters.render(value, type, true);
             if (str == null) {
                 throw new IllegalArgumentException("Cannot convert " + value + " to string");
             }
-            values.put(convkey(key), str);
+            val prev = setRaw(key, str);
+            fireValueChanged(key, Converters.parse(prev, type, true), value);
         }
         modified = true;
     }
 
-    /**
-     * Resets all values to default.
-     */
-    public void reset() {
-        modified = true;
+    private String getRaw(String key) {
+        return values.get(key);
+    }
+
+    private String setRaw(String key, String value) {
+        return values.put(key, value);
     }
 
     public void update(Settings settings) {
@@ -153,54 +146,58 @@ public class Settings {
         if (clearing) {
             clear();
         }
-        this.values.putAll(values);
+        for (val e : values.entrySet()) {
+            set(e.getKey(), e.getValue());
+        }
         modified = true;
     }
 
     public String remove(String key) {
-        val value = values.remove(convkey(key));
+        key = convkey(key);
+        val value = values.remove(key);
+        fireValueRemoved(key, value);
         modified = true;
         return value;
     }
 
     public void clear() {
+        for (val e : values.entrySet()) {
+            fireValueRemoved(e.getKey(), e.getValue());
+        }
         values.clear();
         modified = true;
     }
 
-    public final boolean isEnable(String key) {
-        if (CollectionUtils.isEmpty(dependencies)) {
-            return true;
+    public final void addListener(SettingsListener listener) {
+        if (listener != null) {
+            listeners.add(listener);
         }
-        val dependency = dependencies.get(convkey(key));
-        return dependency == null || isEnable(dependency.key) && dependency.isEnable(values);
     }
 
-    public final void loadDependency(Reader reader) throws IOException {
-        val br = IOUtils.buffered(reader);
-        String line;
-        while ((line = br.readLine()) != null) {
-            line = line.trim();
-            if (line.isEmpty() || line.startsWith("#")) {
-                continue;
-            }
-            int index = line.indexOf("->");
-            if (index == -1) {
-                Log.t(TAG, "not found '->' in line");
-                continue;
-            }
-            val key = line.substring(0, index);
-            line = line.substring(index + 2);
-            index = line.indexOf("@");
-            if (index == -1) {
-                Log.t(TAG, "not found '@' in line");
-                continue;
-            }
-            val condition = Conditions.forPattern(line.substring(index + 1));
-            if (condition != null) {
-                dependencies.put(key, new Dependency(line.substring(0, index), condition));
-            }
+    public final void removeListener(SettingsListener listener) {
+        if (listener != null) {
+            listeners.remove(listener);
         }
+    }
+
+    private void fireValueChanged(String key, Object oldValue, Object newValue) {
+        for (val listener : listeners) {
+            listener.valueChanged(key, oldValue, newValue);
+        }
+    }
+
+    private void fireValueRemoved(String key, Object value) {
+        for (val listener : listeners) {
+            listener.valueRemove(key, value);
+        }
+    }
+
+    public final void fireValueEnable(String key) {
+
+    }
+
+    public final boolean isEnable(String key) {
+        return dependencies.isEnable(convkey(key), values);
     }
 
     /**
@@ -223,7 +220,7 @@ public class Settings {
             return;
         }
         try (val r = readerFor(url)) {
-            loadDependency(r);
+            dependencies.load(r);
         }
     }
 
