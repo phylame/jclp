@@ -153,25 +153,25 @@ public final class ConverterManager {
         registerConverter(Date.class, new DefaultConverter<>(Date.class));
         DefaultConverter<Byte> bc = new DefaultConverter<>(Byte.class);
         registerParser(Byte.class, bc);
-        registerParser(byte.class, bc);
+        registerConverter(byte.class, bc);
         DefaultConverter<Short> sc = new DefaultConverter<>(Short.class);
         registerParser(Short.class, sc);
-        registerParser(short.class, sc);
+        registerConverter(short.class, sc);
         DefaultConverter<Integer> ic = new DefaultConverter<>(Integer.class);
         registerParser(Integer.class, ic);
-        registerParser(int.class, ic);
+        registerConverter(int.class, ic);
         DefaultConverter<Long> lc = new DefaultConverter<>(Long.class);
         registerParser(Long.class, lc);
-        registerParser(long.class, lc);
+        registerConverter(long.class, lc);
         DefaultConverter<Float> fc = new DefaultConverter<>(Float.class);
         registerParser(Float.class, fc);
-        registerParser(float.class, fc);
+        registerConverter(float.class, fc);
         DefaultConverter<Double> dc = new DefaultConverter<>(Double.class);
         registerParser(Double.class, dc);
-        registerParser(double.class, dc);
+        registerConverter(double.class, dc);
         DefaultConverter<Boolean> blc = new DefaultConverter<>(Boolean.class);
         registerParser(Boolean.class, blc);
-        registerParser(boolean.class, blc);
+        registerConverter(boolean.class, blc);
     }
 
     static {

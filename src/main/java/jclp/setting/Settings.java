@@ -114,10 +114,10 @@ public class Settings {
         } else {
             val str = Converters.render(value, type, true);
             if (str == null) {
-                throw new IllegalArgumentException("Cannot convert " + value + " to string");
+                throw new IllegalArgumentException("Cannot convert " + value + " to string with type " + type);
             }
             val prev = setRaw(key, str);
-            fireValueChanged(key, Converters.parse(prev, type, true), value);
+            fireValueChanged(key, prev != null ? Converters.parse(prev, type, true) : null, value);
         }
         modified = true;
     }
