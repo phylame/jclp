@@ -47,7 +47,7 @@ public class DefaultFacade implements Facade {
     }
 
     private void print(Level level, String msg) {
-        if (level.getCode() < Level.WARN.getCode()) {
+        if (level.getCode() > Level.WARN.getCode()) {
             System.out.print(msg);
         } else {
             System.err.print(msg);

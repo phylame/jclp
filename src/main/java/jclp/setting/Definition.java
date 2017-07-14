@@ -2,18 +2,19 @@ package jclp.setting;
 
 import jclp.function.Predicate;
 import jclp.util.Keyed;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Builder
+@ToString
 public class Definition implements Keyed<String> {
     @NonNull
-    private final String key;
+    private String key;
 
     @NonNull
-    private final Class<?> type;
+    private Class<?> type;
 
     private Object defaults;
 
@@ -21,5 +22,6 @@ public class Definition implements Keyed<String> {
 
     private Predicate<Object> constraint;
 
+    @Singular
     private List<Dependency> dependencies;
 }

@@ -15,26 +15,42 @@
  * limitations under the License.
  */
 
+import jclp.function.Predicate;
 import jclp.log.Level;
 import jclp.log.Log;
-import jclp.setting.DefinitionFactory;
+import jclp.log.Slf4jFacade;
+import jclp.setting.Definition;
+import jclp.setting.Dependency;
 import jclp.setting.PropertiesSettings;
 import jclp.util.MiscUtils;
 import lombok.val;
 
-import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 
 
 public class Test {
     public static void main(String[] args) throws Exception {
         Log.setLevel(Level.ALL);
-
-        val definitions = DefinitionFactory.forJSON(new File("E:/tmp/x.txt.def"));
-        System.out.println(definitions);
+        val d = new ArrayList<Definition>();
+        Definition def = Definition.builder()
+                .key("salary")
+                .type(double.class)
+                .defaults(-10)
+                .dependency(new Dependency("sex", new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object arg) {
+                        return "female".equals(arg);
+                    }
+                }))
+                .build();
+        d.add(def);
         try (val r = new FileReader("E:/tmp/x.txt")) {
-            val ps = new PropertiesSettings(r, MiscUtils.toMap(definitions));
+            val ps = new PropertiesSettings(r, MiscUtils.toMap(d));
+            System.out.println(ps);
             System.out.println(ps.get("salary"));
+            System.out.println(ps.isEnable("salary"));
         }
+        Log.t("Test", "some text {0}", 12545);
     }
 }

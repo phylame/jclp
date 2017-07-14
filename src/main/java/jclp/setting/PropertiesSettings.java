@@ -25,14 +25,17 @@ public class PropertiesSettings extends AbstractSettings implements PersistableS
     private final Properties values;
 
     public PropertiesSettings(@NonNull Properties values) {
-        super(null);
-        this.values = values;
+        this(values, null);
     }
 
     public PropertiesSettings(@NonNull Properties values, Map<String, Definition> definitions) {
         super(definitions);
         this.values = values;
         initValues();
+    }
+
+    public PropertiesSettings(@NonNull Reader reader) throws IOException {
+        this(reader, null);
     }
 
     public PropertiesSettings(@NonNull Reader reader, Map<String, Definition> definitions) throws IOException {
