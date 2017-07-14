@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -14,44 +15,24 @@
  * limitations under the License.
  */
 
-import jclp.cond.Conditions;
+import java.io.File;
+import java.io.FileReader;
+
 import jclp.log.Level;
 import jclp.log.Log;
-import jclp.setting.Dependency;
-import jclp.setting.Settings;
-import jclp.setting.SettingsListener;
+import jclp.test.DefinitionFactory;
+import jclp.test.PropertiesSettings;
+import jclp.util.MiscUtils;
 import lombok.val;
 
-import java.io.IOException;
 
-/**
- * Created by Lateray on 2017-7-11.
- */
-public class Test implements SettingsListener {
-    private Settings settings = new Settings("E:/tmp/app");
-
-    private Test() throws IOException {
-    }
-
-    public static void main(String[] args) throws IOException {
+public class Test {
+    public static void main(String[] args) throws Exception {
         Log.setLevel(Level.ALL);
-        Test test = new Test();
-        val settings = test.settings;
-        settings.addListener(test);
-        val dep = new Dependency("address", Conditions.<String>isEmpty());
-        settings.getDependencies().add("zip", dep);
-        settings.set("age", "1");
-        System.out.println(settings.isEnable("sex"));
-        settings.set("x", 12, int.class);
-    }
-
-    @Override
-    public void valueChanged(String key, Object oldValue, Object newValue) {
-        System.out.println("key = [" + key + "], oldValue = [" + oldValue + "], newValue = [" + newValue + "]");
-    }
-
-    @Override
-    public void valueRemove(String key, Object value) {
-        System.out.println("key = [" + key + "], value = [" + value + "]");
+        val deps = DefinitionFactory.forJSON(new File("E:/tmp/x.txt.def"));
+        try (val r = new FileReader("E:/tmp/x.txt")) {
+            val ps = new PropertiesSettings(r, MiscUtils.toMap(deps));
+            System.out.println(ps.get("salary"));
+        }
     }
 }

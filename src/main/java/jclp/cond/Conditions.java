@@ -16,6 +16,12 @@
 
 package jclp.cond;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+
 import jclp.function.Predicate;
 import jclp.util.DateUtils;
 import jclp.util.StringUtils;
@@ -23,14 +29,8 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
 
-
-public class Conditions {
+public final class Conditions {
     public enum CompareType {
         EQ, LT, GT, LE, GE
     }
@@ -69,7 +69,7 @@ public class Conditions {
         return new NegateCondition<>(condition);
     }
 
-    public static Predicate<String> forPattern(String pattern) {
+    public static Predicate<? super String> forPattern(String pattern) {
         if (pattern == null || pattern.isEmpty()) {
             return null;
         }
@@ -80,18 +80,18 @@ public class Conditions {
         }
         Predicate<String> condition;
         switch (pattern) {
-            case "null":
-                condition = isNull();
-                break;
-            case "empty":
-                condition = isEmpty();
-                break;
-            default:
-                condition = parseCondition(pattern);
-                if (condition == null) {
-                    return null;
-                }
-                break;
+        case "null":
+            condition = isNull();
+        break;
+        case "empty":
+            condition = isEmpty();
+        break;
+        default:
+            condition = parseCondition(pattern);
+            if (condition == null) {
+                return null;
+            }
+        break;
         }
         return negate ? negate(condition) : condition;
     }
@@ -103,49 +103,49 @@ public class Conditions {
         }
         val op = pattern.substring(0, index);
         switch (op) {
-            case "eq": {
-                pattern = pattern.substring(index + 1);
-                return !pattern.isEmpty()
-                        ? equalTo(pattern)
-                        : null;
+        case "eq": {
+            pattern = pattern.substring(index + 1);
+            return !pattern.isEmpty()
+                    ? equalTo(pattern)
+                    : null;
+        }
+        case "gt":
+        case "ge":
+        case "lt":
+        case "le": {
+            pattern = pattern.substring(index + 1);
+            return !pattern.isEmpty()
+                    ? compareTo(pattern, CompareType.valueOf(op.toUpperCase()), new StringComparator())
+                    : null;
+        }
+        case "in":
+            pattern = pattern.substring(index + 1);
+            return !pattern.isEmpty()
+                    ? withIn(Arrays.asList(pattern.split(",")))
+                    : null;
+        case "ag": {
+            pattern = pattern.substring(index + 1);
+            index = pattern.indexOf(",");
+            if (index == -1) {
+                return null;
             }
-            case "gt":
-            case "ge":
-            case "lt":
-            case "le": {
-                pattern = pattern.substring(index + 1);
-                return !pattern.isEmpty()
-                        ? compareTo(pattern, CompareType.valueOf(op.toUpperCase()), new StringComparator())
-                        : null;
+            AggregateType type;
+            try {
+                type = AggregateType.valueOf(pattern.substring(0, index).toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return null;
             }
-            case "in":
-                pattern = pattern.substring(index + 1);
-                return !pattern.isEmpty()
-                        ? withIn(Arrays.asList(pattern.split(",")))
-                        : null;
-            case "ag": {
-                pattern = pattern.substring(index + 1);
-                index = pattern.indexOf(",");
-                if (index == -1) {
-                    return null;
+            val conditions = new ArrayList<Predicate<? super String>>();
+            for (val exp : pattern.substring(index + 1).split(";")) {
+                val condition = forPattern(exp);
+                if (condition != null) {
+                    conditions.add(condition);
                 }
-                AggregateType type;
-                try {
-                    type = AggregateType.valueOf(pattern.substring(0, index).toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    return null;
-                }
-                val conditions = new ArrayList<Predicate<? super String>>();
-                for (val exp : pattern.substring(index + 1).split(";")) {
-                    val condition = forPattern(exp);
-                    if (condition != null) {
-                        conditions.add(condition);
-                    }
-                }
-                return aggregate(type, conditions);
             }
-            default:
-                throw new IllegalArgumentException("unsupported op: " + op);
+            return aggregate(type, conditions);
+        }
+        default:
+            throw new IllegalArgumentException("unsupported op: " + op);
         }
     }
 
@@ -157,12 +157,12 @@ public class Conditions {
                 val pt = o2.charAt(0);
                 o2 = o2.substring(1);
                 switch (pt) {
-                    case 'i':
-                        return Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
-                    case 'f':
-                        return Double.compare(Double.parseDouble(o1), Double.parseDouble(o2));
-                    case 'd':
-                        return DateUtils.forISO(o1).compareTo(DateUtils.forISO(o2));
+                case 'i':
+                    return Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
+                case 'f':
+                    return Double.compare(Double.parseDouble(o1), Double.parseDouble(o2));
+                case 'd':
+                    return DateUtils.forISO(o1).compareTo(DateUtils.forISO(o2));
                 }
                 if (o2.startsWith("i")) {
                     return Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2.substring(1)));

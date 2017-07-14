@@ -16,16 +16,19 @@
 
 package jclp.util;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import jclp.function.Predicate;
 import jclp.log.Log;
 import lombok.NonNull;
 import lombok.val;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
 
 public final class MiscUtils {
     private MiscUtils() {
@@ -90,7 +93,8 @@ public final class MiscUtils {
         return find(item, filter, 0, false);
     }
 
-    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Predicate<? super T> filter, int from, boolean recursion) {
+    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Predicate<? super T> filter, int from,
+            boolean recursion) {
         val items = item.getChildren();
         for (int i = from, end = item.size(); i < end; ++i) {
             T sub = items.get(i);
@@ -112,10 +116,10 @@ public final class MiscUtils {
     }
 
     public static <T extends Hierarchical<T>> int select(@NonNull T item,
-                                                         @NonNull Predicate<? super T> filter,
-                                                         @NonNull List<? super T> result,
-                                                         int limit,
-                                                         boolean recursion) {
+            @NonNull Predicate<? super T> filter,
+            @NonNull List<? super T> result,
+            int limit,
+            boolean recursion) {
         if (limit <= 0) {
             return 0;
         }
@@ -146,5 +150,16 @@ public final class MiscUtils {
                 return classLoader;
             }
         });
+    }
+
+    public static <K, T extends Keyed<K>> Map<K, T> toMap(Collection<T> items) {
+        if (CollectionUtils.isEmpty(items)) {
+            return null;
+        }
+        val m = new HashMap<K, T>();
+        for (val item : items) {
+            m.put(item.getKey(), item);
+        }
+        return m;
     }
 }
