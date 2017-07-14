@@ -23,30 +23,32 @@ public final class Converters {
     private Converters() {
     }
 
-    public static <T> String render(T o) {
-        return render(o, false);
-    }
-
     @SuppressWarnings("unchecked")
-    public static <T> String render(T o, boolean forwarding) {
-        return o == null ? "null" : render(o, (Class<T>) o.getClass(), forwarding);
+    public static <T> String render(T o) {
+        if (o == null) {
+            return null;
+        } else if (o instanceof String) {
+            return (String) o;
+        } else {
+            return render(o, (Class<T>) o.getClass());
+        }
     }
 
     public static <T> String render(@NonNull T o, @NonNull Class<T> type) {
-        return render(o, type, false);
-    }
-
-    public static <T> String render(@NonNull T o, @NonNull Class<T> type, boolean forwarding) {
-        val render = ConverterManager.renderFor(type, forwarding);
-        return render != null ? render.render(o) : null;
+        if (o instanceof String && type == String.class) {
+            return (String) o;
+        } else {
+            val render = ConverterManager.renderFor(type);
+            return render != null ? render.render(o) : null;
+        }
     }
 
     public static <T> T parse(@NonNull String str, @NonNull Class<T> type) {
-        return parse(str, type, false);
-    }
-
-    public static <T> T parse(@NonNull String str, @NonNull Class<T> type, boolean forwarding) {
-        val parser = ConverterManager.parserFor(type, forwarding);
-        return parser != null ? parser.parse(str) : null;
+        if (type == String.class) {
+            return type.cast(str);
+        } else {
+            val parser = ConverterManager.parserFor(type);
+            return parser != null ? parser.parse(str) : null;
+        }
     }
 }

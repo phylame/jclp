@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package jclp.cond;
+package jclp.condition;
 
 import jclp.function.Predicate;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Collection;
+import java.util.Objects;
 
 
 @ToString
 @RequiredArgsConstructor
-class WithInCondition<T> implements Predicate<T> {
-    @NonNull
-    private final Collection<T> referred;
+class EqualCondition<T> implements Predicate<T> {
+    private final T referred;
 
     @Override
     public boolean test(T value) {
-        return referred.contains(value);
+        return Objects.equals(value, referred);
     }
 }

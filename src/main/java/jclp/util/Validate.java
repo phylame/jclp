@@ -16,10 +16,16 @@
 
 package jclp.util;
 
+import static jclp.util.StringUtils.isNotEmpty;
+
 /**
  * Utilities for validation.
  */
 public final class Validate {
+    private static final String NULL_NOTE = "object cannot be null";
+
+    private static final String EMPTY_NOTE = "string cannot be null or empty";
+
     private Validate() {
     }
 
@@ -29,40 +35,62 @@ public final class Validate {
         }
     }
 
-    public static void require(boolean condition, String format, Object... args) {
+    public static void require(boolean condition, String msg, Object arg1) {
         if (!condition) {
-            throw new IllegalArgumentException(String.format(format, args));
+            throw new IllegalArgumentException(String.format(msg, arg1));
         }
     }
 
-    public static Object requireNotNull(Object obj) {
-        require(obj != null, "object cannot be null");
-        return obj;
+    public static void require(boolean condition, String msg, Object arg1, Object arg2) {
+        if (!condition) {
+            throw new IllegalArgumentException(String.format(msg, arg1, arg2));
+        }
     }
 
-    public static Object requireNotNull(Object obj, String msg) {
+    public static void require(boolean condition, String msg, Object... args) {
+        if (!condition) {
+            throw new IllegalArgumentException(String.format(msg, args));
+        }
+    }
+
+    public static void requireNotNull(Object obj) {
+        require(obj != null, NULL_NOTE);
+    }
+
+    public static void requireNotNull(Object obj, String msg) {
         require(obj != null, msg);
-        return obj;
     }
 
-    public static Object requireNotNull(Object obj, String msg, Object... args) {
+    public static void requireNotNull(Object obj, String msg, Object arg1) {
+        require(obj != null, msg, arg1);
+    }
+
+    public static void requireNotNull(Object obj, String msg, Object arg1, Object arg2) {
+        require(obj != null, msg, arg1, arg2);
+    }
+
+    public static void requireNotNull(Object obj, String msg, Object... args) {
         require(obj != null, msg, args);
-        return obj;
     }
 
-    public static <T extends CharSequence> T requireNotEmpty(T cs) {
-        require(StringUtils.isNotEmpty(cs), "string cannot be null or empty");
-        return cs;
+    public static <T extends CharSequence> void requireNotEmpty(T str) {
+        require(isNotEmpty(str), EMPTY_NOTE);
     }
 
-    public static <T extends CharSequence> T requireNotEmpty(T cs, String msg) {
-        require(StringUtils.isNotEmpty(cs), msg);
-        return cs;
+    public static <T extends CharSequence> void requireNotEmpty(T str, String msg) {
+        require(isNotEmpty(str), msg);
     }
 
-    public static <T extends CharSequence> T requireNotEmpty(T cs, String msg, Object... args) {
-        require(StringUtils.isNotEmpty(cs), msg, args);
-        return cs;
+    public static <T extends CharSequence> void requireNotEmpty(T str, String msg, Object arg1) {
+        require(isNotEmpty(str), msg, arg1);
+    }
+
+    public static <T extends CharSequence> void requireNotEmpty(T str, String msg, Object arg1, Object arg2) {
+        require(isNotEmpty(str), msg, arg1, arg2);
+    }
+
+    public static <T extends CharSequence> void requireNotEmpty(T str, String msg, Object... args) {
+        require(isNotEmpty(str), msg, args);
     }
 
     public static void check(boolean condition, String msg) {
@@ -71,33 +99,61 @@ public final class Validate {
         }
     }
 
-    public static void check(boolean condition, String format, Object... args) {
+    public static void check(boolean condition, String msg, Object arg1) {
         if (!condition) {
-            throw new IllegalStateException(String.format(format, args));
+            throw new IllegalStateException(String.format(msg, arg1));
+        }
+    }
+
+    public static void check(boolean condition, String msg, Object arg1, Object arg2) {
+        if (!condition) {
+            throw new IllegalStateException(String.format(msg, arg1, arg2));
+        }
+    }
+
+    public static void check(boolean condition, String msg, Object... args) {
+        if (!condition) {
+            throw new IllegalStateException(String.format(msg, args));
         }
     }
 
     public static void checkNotNull(Object o) {
-        check(o != null, "object cannot be null");
+        check(o != null, NULL_NOTE);
     }
 
     public static void checkNotNull(Object o, String msg) {
         check(o != null, msg);
     }
 
+    public static void checkNotNull(Object o, String msg, Object arg1) {
+        check(o != null, msg, arg1);
+    }
+
+    public static void checkNotNull(Object o, String msg, Object arg1, Object arg2) {
+        check(o != null, msg, arg1, arg2);
+    }
+
     public static void checkNotNull(Object o, String msg, Object... args) {
         check(o != null, msg, args);
     }
 
-    public static void checkNotEmpty(CharSequence cs) {
-        check(StringUtils.isNotEmpty(cs), "string cannot be null or empty");
+    public static void checkNotEmpty(CharSequence str) {
+        check(isNotEmpty(str), EMPTY_NOTE);
     }
 
-    public static void checkNotEmpty(CharSequence cs, String msg) {
-        check(StringUtils.isNotEmpty(cs), msg);
+    public static void checkNotEmpty(CharSequence str, String msg) {
+        check(isNotEmpty(str), msg);
     }
 
-    public static void checkNotEmpty(CharSequence cs, String msg, Object... args) {
-        check(StringUtils.isNotEmpty(cs), msg, args);
+    public static void checkNotEmpty(CharSequence str, String msg, Object arg1) {
+        check(isNotEmpty(str), msg, arg1);
+    }
+
+    public static void checkNotEmpty(CharSequence str, String msg, Object arg1, Object arg2) {
+        check(isNotEmpty(str), msg, arg1);
+    }
+
+    public static void checkNotEmpty(CharSequence str, String msg, Object... args) {
+        check(isNotEmpty(str), msg, args);
     }
 }

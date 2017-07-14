@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package jclp.text;
+package jclp.condition;
 
-import jclp.function.Function;
+import jclp.function.Predicate;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+import java.util.Collection;
+
+
+@ToString
 @RequiredArgsConstructor
-public class FunctionRender<T> implements Render<T> {
+class WithInCondition<T> implements Predicate<T> {
     @NonNull
-    private final Function<? super T, ? extends String> transform;
+    private final Collection<T> referred;
 
     @Override
-    public String render(T obj) {
-        return transform.apply(obj);
+    public boolean test(T value) {
+        return referred.contains(value);
     }
 }

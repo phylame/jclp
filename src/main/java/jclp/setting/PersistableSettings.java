@@ -16,8 +16,12 @@
 
 package jclp.setting;
 
-public interface SettingsListener {
-    void valueChanged(String key, Object oldValue, Object newValue);
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-    void valueRemove(String key, Object value);
+public interface PersistableSettings {
+    void load(InputStream in) throws IOException;
+
+    void sync(OutputStream out) throws IOException;
 }

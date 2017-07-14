@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jclp.cond;
+package jclp.condition;
 
 import jclp.function.Predicate;
 import jclp.log.Log;

@@ -22,6 +22,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Locale;
@@ -38,45 +39,20 @@ public final class ConverterManager {
     private static final Map<Class<?>, Render<?>> renders = new IdentityHashMap<>();
 
     public static boolean hasParser(Class<?> type) {
-        return hasParser(type, false);
-    }
-
-    public static boolean hasParser(Class<?> type, boolean forwarding) {
-        if (type == null) {
-            return false;
-        }
-        if (parsers.containsKey(type)) {
-            return true;
-        }
-        if (forwarding) {
-            for (val clazz : parsers.keySet()) {
-                if (type.isAssignableFrom(clazz)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return parserFor(type) != null;
     }
 
     public static boolean hasRender(Class<?> type) {
-        return hasRender(type, false);
+        return renderFor(type) != null;
     }
 
-    public static boolean hasRender(Class<?> type, boolean forwarding) {
-        if (type == null) {
-            return false;
-        }
-        if (renders.containsKey(type)) {
-            return true;
-        }
-        if (forwarding) {
-            for (val clazz : renders.keySet()) {
-                if (clazz.isAssignableFrom(type)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public static <T extends Enum<T>> void registerParser(@NonNull Class<T> type) {
+        registerParser(type, new EnumParser<>(type));
+    }
+
+    public static <T> void registerConverter(@NonNull Class<T> type, Converter<T> converter) {
+        registerParser(type, converter);
+        registerRender(type, converter);
     }
 
     public static <T> void registerParser(@NonNull Class<T> type, Parser<? extends T> parser) {
@@ -87,10 +63,6 @@ public final class ConverterManager {
         }
     }
 
-    public static <T extends Enum<T>> void registerParser(@NonNull Class<T> type) {
-        registerParser(type, new EnumParser<>(type));
-    }
-
     public static <T> void registerRender(@NonNull Class<T> type, Render<? super T> render) {
         if (render == null) {
             renders.remove(type);
@@ -99,55 +71,22 @@ public final class ConverterManager {
         }
     }
 
-    public static <T> void registerConverter(@NonNull Class<T> type, Converter<T> converter) {
-        registerParser(type, converter);
-        registerRender(type, converter);
-    }
-
-    public static <T> Parser<T> parserFor(Class<T> type) {
-        return parserFor(type, false);
-    }
-
     @SuppressWarnings("unchecked")
-    public static <T> Parser<T> parserFor(Class<T> type, boolean forwarding) {
+    public static <T> Parser<T> parserFor(Class<T> type) {
         if (type == null) {
             return null;
         }
         val parser = parsers.get(type);
-        if (parser != null) {
-            return (Parser<T>) parser;
-        }
-        if (forwarding) {
-            for (val e : parsers.entrySet()) {
-                if (type.isAssignableFrom(e.getKey())) {
-                    return (Parser<T>) e.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    public static <T> Render<T> renderFor(Class<T> type) {
-        return renderFor(type, false);
+        return parser != null ? (Parser<T>) parser : null;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Render<T> renderFor(Class<T> type, boolean forwarding) {
+    public static <T> Render<T> renderFor(Class<T> type) {
         if (type == null) {
             return null;
         }
         val parser = renders.get(type);
-        if (parser != null) {
-            return (Render<T>) parser;
-        }
-        if (forwarding) {
-            for (val e : renders.entrySet()) {
-                if (e.getKey().isAssignableFrom(type)) {
-                    return (Render<T>) e.getValue();
-                }
-            }
-        }
-        return null;
+        return parser != null ? (Render<T>) parser : null;
     }
 
     public static void registerDefaults() {
@@ -155,27 +94,27 @@ public final class ConverterManager {
         registerConverter(Locale.class, new DefaultConverter<>(Locale.class));
         registerParser(String.class, new DefaultConverter<>(String.class));
         registerConverter(Date.class, new DefaultConverter<>(Date.class));
-        DefaultConverter<Byte> bc = new DefaultConverter<>(Byte.class);
-        registerParser(Byte.class, bc);
-        registerConverter(byte.class, bc);
-        DefaultConverter<Short> sc = new DefaultConverter<>(Short.class);
-        registerParser(Short.class, sc);
-        registerConverter(short.class, sc);
-        DefaultConverter<Integer> ic = new DefaultConverter<>(Integer.class);
-        registerParser(Integer.class, ic);
-        registerConverter(int.class, ic);
-        DefaultConverter<Long> lc = new DefaultConverter<>(Long.class);
-        registerParser(Long.class, lc);
-        registerConverter(long.class, lc);
-        DefaultConverter<Float> fc = new DefaultConverter<>(Float.class);
-        registerParser(Float.class, fc);
-        registerConverter(float.class, fc);
-        DefaultConverter<Double> dc = new DefaultConverter<>(Double.class);
-        registerParser(Double.class, dc);
-        registerConverter(double.class, dc);
-        DefaultConverter<Boolean> blc = new DefaultConverter<>(Boolean.class);
-        registerParser(Boolean.class, blc);
-        registerConverter(boolean.class, blc);
+        val byteConverter = new DefaultConverter<Byte>(Byte.class);
+        registerParser(Byte.class, byteConverter);
+        registerConverter(byte.class, byteConverter);
+        val shortConverter = new DefaultConverter<Short>(Short.class);
+        registerParser(Short.class, shortConverter);
+        registerConverter(short.class, shortConverter);
+        val integerConverter = new DefaultConverter<Integer>(Integer.class);
+        registerParser(Integer.class, integerConverter);
+        registerConverter(int.class, integerConverter);
+        val longConverter = new DefaultConverter<Long>(Long.class);
+        registerParser(Long.class, longConverter);
+        registerConverter(long.class, longConverter);
+        val floatConverter = new DefaultConverter<Float>(Float.class);
+        registerParser(Float.class, floatConverter);
+        registerConverter(float.class, floatConverter);
+        val doubleConverter = new DefaultConverter<Double>(Double.class);
+        registerParser(Double.class, doubleConverter);
+        registerConverter(double.class, doubleConverter);
+        val booleanConverter = new DefaultConverter<Boolean>(Boolean.class);
+        registerParser(Boolean.class, booleanConverter);
+        registerConverter(boolean.class, booleanConverter);
     }
 
     static {
@@ -207,7 +146,11 @@ public final class ConverterManager {
             } else if (type == Boolean.class) {
                 return type.cast(Boolean.valueOf(str));
             } else if (type == Date.class) {
-                return type.cast(DateUtils.parse(str, DateUtils.ISO_FORMAT, null));
+                try {
+                    return type.cast(DateUtils.parse(str, DateUtils.ISO_FORMAT));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException("Invalid date string " + str, e);
+                }
             } else if (type == Locale.class) {
                 return type.cast(MiscUtils.parseLocale(str));
             } else {

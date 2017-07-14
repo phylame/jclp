@@ -15,23 +15,25 @@
  * limitations under the License.
  */
 
-import java.io.File;
-import java.io.FileReader;
-
 import jclp.log.Level;
 import jclp.log.Log;
-import jclp.test.DefinitionFactory;
-import jclp.test.PropertiesSettings;
+import jclp.setting.DefinitionFactory;
+import jclp.setting.PropertiesSettings;
 import jclp.util.MiscUtils;
 import lombok.val;
+
+import java.io.File;
+import java.io.FileReader;
 
 
 public class Test {
     public static void main(String[] args) throws Exception {
         Log.setLevel(Level.ALL);
-        val deps = DefinitionFactory.forJSON(new File("E:/tmp/x.txt.def"));
+
+        val definitions = DefinitionFactory.forJSON(new File("E:/tmp/x.txt.def"));
+        System.out.println(definitions);
         try (val r = new FileReader("E:/tmp/x.txt")) {
-            val ps = new PropertiesSettings(r, MiscUtils.toMap(deps));
+            val ps = new PropertiesSettings(r, MiscUtils.toMap(definitions));
             System.out.println(ps.get("salary"));
         }
     }
