@@ -19,21 +19,23 @@ package jclp.util;
 import jclp.function.Provider;
 import jclp.value.Lazy;
 import jclp.value.Values;
-import lombok.*;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.val;
 
 import java.text.MessageFormat;
 import java.util.*;
 
 @RequiredArgsConstructor
-public final class Linguist implements Localizable {
+public final class Linguist implements FallbackTranslator {
     @NonNull
     private final String path;
     private final Locale locale;
     private final ClassLoader loader;
 
-    @Getter
     @Setter
-    private List<? extends ResourceBundle> fallbackBundles;
+    private List<? extends Translator> translators;
 
     public Linguist(String path) {
         this(path, null);
@@ -59,10 +61,10 @@ public final class Linguist implements Localizable {
         try {
             return bundle.get().getString(key);
         } catch (MissingResourceException e) {
-            if (CollectionUtils.isNotEmpty(fallbackBundles)) {
-                for (val bundle : fallbackBundles) {
+            if (CollectionUtils.isNotEmpty(translators)) {
+                for (val translator : translators) {
                     try {
-                        return bundle.getString(key);
+                        return translator.tr(key);
                     } catch (MissingResourceException ignored) {
                     }
                 }

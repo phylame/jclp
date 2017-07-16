@@ -18,7 +18,7 @@ package jclp.util;
 
 import java.util.MissingResourceException;
 
-public interface Localizable {
+public interface Translator {
     String tr(String key) throws MissingResourceException;
 
     String optTr(String key, String fallback);

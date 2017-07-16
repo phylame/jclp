@@ -127,6 +127,16 @@ public final class DateUtils {
         }
     }
 
+    public static Date parse(@NonNull String str, String... formats) {
+        for (val format : formats) {
+            try {
+                return parse(str, format);
+            } catch (ParseException ignored) {
+            }
+        }
+        throw new IllegalArgumentException("Invalid date string: " + str);
+    }
+
     public static Date calculate(@NonNull Date date, char unit, int amount) {
         final int field;
         switch (unit) {

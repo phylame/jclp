@@ -22,7 +22,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Locale;
@@ -146,11 +145,7 @@ public final class ConverterManager {
             } else if (type == Boolean.class) {
                 return type.cast(Boolean.valueOf(str));
             } else if (type == Date.class) {
-                try {
-                    return type.cast(DateUtils.parse(str, DateUtils.ISO_FORMAT));
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException("Invalid date string " + str, e);
-                }
+                return type.cast(DateUtils.parse(str, "yyyy-M-d H:m:s", "yyyy-M-d", "H:m:s"));
             } else if (type == Locale.class) {
                 return type.cast(MiscUtils.parseLocale(str));
             } else {

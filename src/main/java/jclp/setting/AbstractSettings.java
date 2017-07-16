@@ -3,7 +3,7 @@ package jclp.setting;
 import jclp.util.Validate;
 import jclp.value.Values;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 
@@ -13,9 +13,13 @@ import static jclp.util.CollectionUtils.isEmpty;
 import static jclp.util.CollectionUtils.isNotEmpty;
 
 @ToString
-@RequiredArgsConstructor
 public abstract class AbstractSettings implements Settings {
-    protected final Map<String, Definition> definitions;
+    @Setter
+    protected Map<String, Definition> definitions;
+
+    protected AbstractSettings(Map<String, Definition> definitions) {
+        this.definitions = definitions;
+    }
 
     protected abstract <T> T convertValue(Object value, Class<T> type);
 

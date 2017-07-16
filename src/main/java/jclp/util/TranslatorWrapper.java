@@ -16,14 +16,16 @@
 
 package jclp.util;
 
+import lombok.Getter;
 import lombok.Setter;
 
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 
-public class LocalizableWrapper implements Localizable {
+public class TranslatorWrapper implements Translator {
+    @Getter
     @Setter
-    private Localizable translator;
+    private Translator translator;
 
     @Override
     public String tr(String key) throws MissingResourceException {

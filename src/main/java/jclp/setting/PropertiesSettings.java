@@ -24,6 +24,10 @@ public class PropertiesSettings extends AbstractSettings implements PersistableS
 
     private final Properties values;
 
+    public PropertiesSettings() {
+        this(new Properties(), null);
+    }
+
     public PropertiesSettings(@NonNull Properties values) {
         this(values, null);
     }
@@ -32,6 +36,18 @@ public class PropertiesSettings extends AbstractSettings implements PersistableS
         super(definitions);
         this.values = values;
         initValues();
+    }
+
+    public PropertiesSettings(@NonNull File file) throws IOException {
+        this(file, null);
+    }
+
+    public PropertiesSettings(@NonNull File file, Map<String, Definition> definitions) throws IOException {
+        super(definitions);
+        values = new Properties();
+        try (val reader = IOUtils.readerFor(file)) {
+            load(reader);
+        }
     }
 
     public PropertiesSettings(@NonNull Reader reader) throws IOException {
