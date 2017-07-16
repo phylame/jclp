@@ -290,7 +290,7 @@ public final class Implementor<T> {
                 checkNotNull(path, "No path and class specified");
                 val klass = loader != null ? Class.forName(path, true, loader) : Class.forName(path);
                 if (!type.isAssignableFrom(klass)) {
-                    Log.d(TAG, "{1} is not sub class of {2}", klass, type);
+                    Log.d(TAG, "{0} is not sub class of {1}", klass, type);
                     return null;
                 }
                 clazz = (Class<T>) klass;
