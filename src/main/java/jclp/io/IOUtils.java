@@ -52,7 +52,7 @@ public final class IOUtils {
     public static int DEFAULT_BUFFER_SIZE = 8192;
 
     /**
-     * End of line.
+     * End of file.
      */
     public static final int EOF = -1;
 

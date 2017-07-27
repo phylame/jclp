@@ -16,20 +16,28 @@
 
 package jclp.util;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import jclp.function.Predicate;
 import jclp.log.Log;
 import lombok.NonNull;
 import lombok.val;
-
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.*;
 
 public final class MiscUtils {
     private MiscUtils() {
     }
 
     private static final String TAG = "MiscUtils";
+
+    public static String platformEncoding() {
+        return System.getProperty("file.encoding");
+    }
 
     public static String renderLocale(@NonNull Locale locale) {
         val country = locale.getCountry();
@@ -89,7 +97,7 @@ public final class MiscUtils {
     }
 
     public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Predicate<? super T> filter, int from,
-                                                     boolean recursion) {
+            boolean recursion) {
         val items = item.getChildren();
         for (int i = from, end = item.size(); i < end; ++i) {
             T sub = items.get(i);
@@ -111,10 +119,10 @@ public final class MiscUtils {
     }
 
     public static <T extends Hierarchical<T>> int select(@NonNull T item,
-                                                         @NonNull Predicate<? super T> filter,
-                                                         @NonNull List<? super T> result,
-                                                         int limit,
-                                                         boolean recursion) {
+            @NonNull Predicate<? super T> filter,
+            @NonNull List<? super T> result,
+            int limit,
+            boolean recursion) {
         if (limit <= 0) {
             return 0;
         }
