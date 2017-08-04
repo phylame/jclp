@@ -55,7 +55,7 @@ public class FileVdmWriter implements VdmWriter {
     }
 
     private FileOutputStream openOutput(File file) throws IOException {
-        if (!dir.mkdirs()) {
+        if (!dir.exists() && !dir.mkdirs()) {
             throw new IOException("Cannot create dir " + dir);
         }
         val output = new FileOutputStream(file);
@@ -100,6 +100,6 @@ public class FileVdmWriter implements VdmWriter {
 
     @Override
     public FileVdmEntry newEntry(@NonNull String name) {
-        return new FileVdmEntry(name);
+        return new FileVdmEntry(new File(dir, name));
     }
 }

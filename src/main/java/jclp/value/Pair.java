@@ -16,6 +16,7 @@
 
 package jclp.value;
 
+import jclp.util.Keyed;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +24,7 @@ import java.util.Map;
 
 @Data
 @RequiredArgsConstructor
-public final class Pair<A, B> implements Map.Entry<A, B> {
+public final class Pair<A, B> implements Map.Entry<A, B>, Keyed<A> {
     private final A first;
     private final B second;
 

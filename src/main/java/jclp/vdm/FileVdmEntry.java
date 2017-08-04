@@ -16,7 +16,6 @@
 
 package jclp.vdm;
 
-import jclp.util.Validate;
 import lombok.NonNull;
 
 import java.io.File;
@@ -32,9 +31,8 @@ public class FileVdmEntry implements VdmEntry {
 
     final File file;
 
-    FileVdmEntry(@NonNull String name) {
-        this(new File(name), null);
-        Validate.require(!file.isAbsolute(), "Relative path is required: %s", file.getPath());
+    FileVdmEntry(File file) {
+        this(file, null);
     }
 
     FileVdmEntry(@NonNull File file, FileVdmReader vdmReader) {
