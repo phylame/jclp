@@ -4,13 +4,11 @@ import java.util.Iterator;
 
 import jclp.function.Function;
 import jclp.function.Predicate;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class Sequence<E> {
-    @Getter
     @NonNull
     private final Iterator<? extends E> iterator;
 
