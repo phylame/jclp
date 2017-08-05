@@ -81,10 +81,12 @@ public class FileVdmReader implements VdmReader {
     public InputStream streamFor(@NonNull VdmEntry entry) throws IOException {
         ensureOpen();
         val fileEntry = (FileVdmEntry) entry;
-        val input = fileEntry.vdmReader != null && fileEntry.vdmReader.get() == this
+        val input = fileEntry.reader == this
                 ? new FileInputStream(fileEntry.file)
                 : null;
-        inputs.add(input);
+        if (input != null) {
+            inputs.add(input);
+        }
         return input;
     }
 
@@ -113,7 +115,7 @@ public class FileVdmReader implements VdmReader {
 
     @Override
     public String toString() {
-        return "file://" + dir.getPath();
+        return "dir://" + dir.getPath();
     }
 
     private void ensureOpen() {

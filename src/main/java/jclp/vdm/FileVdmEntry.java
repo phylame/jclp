@@ -20,29 +20,26 @@ import lombok.NonNull;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
 
 public class FileVdmEntry implements VdmEntry {
-    static final String COMMENT_FILE = "__FVECOMM__";
-
-    final WeakReference<? extends FileVdmReader> vdmReader;
-
-    OutputStream stream;
+    static final String COMMENT_FILE = ".__FVECOMM__";
 
     final File file;
+    final FileVdmReader reader;
+    OutputStream stream;
 
     FileVdmEntry(File file) {
         this(file, null);
     }
 
-    FileVdmEntry(@NonNull File file, FileVdmReader vdmReader) {
+    FileVdmEntry(@NonNull File file, FileVdmReader reader) {
         this.file = file;
-        this.vdmReader = vdmReader != null ? new WeakReference<>(vdmReader) : null;
+        this.reader = reader;
     }
 
     @Override
     public String getName() {
-        return file.getName();
+        return file.getPath();
     }
 
     @Override
@@ -57,6 +54,6 @@ public class FileVdmEntry implements VdmEntry {
 
     @Override
     public String toString() {
-        return file.getPath();
+        return "file:///" + file.getPath();
     }
 }
