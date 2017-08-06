@@ -58,6 +58,10 @@ public class FileVdmWriter implements VdmWriter {
         if (!dir.exists() && !dir.mkdirs()) {
             throw new IOException("Cannot create dir " + dir);
         }
+        val parent = file.getParentFile();
+        if (!parent.exists() && !parent.mkdirs()) {
+            throw new IOException("Cannot create dir " + parent);
+        }
         val output = new FileOutputStream(file);
         outputs.add(output);
         return output;

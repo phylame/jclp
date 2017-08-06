@@ -10,7 +10,7 @@
         <version>1.0.3</version>
     </parent>
 
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <artifactId>commons</artifactId>
     <inceptionYear>2016</inceptionYear>
     <description>Java Commons and Utilities by PW</description>

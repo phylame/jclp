@@ -16,18 +16,14 @@
 
 package jclp.util;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import jclp.function.Predicate;
 import jclp.log.Log;
 import lombok.NonNull;
 import lombok.val;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.*;
 
 public final class MiscUtils {
     private MiscUtils() {
@@ -64,14 +60,14 @@ public final class MiscUtils {
 
     public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull Collection<Integer> indices) {
         for (val index : indices) {
-            item = item.getChildren().get(index < 0 ? item.size() + index : index);
+            item = item.get(index < 0 ? item.size() + index : index);
         }
         return item;
     }
 
     public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull int[] indices) {
         for (val index : indices) {
-            item = item.getChildren().get(index < 0 ? item.size() + index : index);
+            item = item.get(index < 0 ? item.size() + index : index);
         }
         return item;
     }
@@ -97,10 +93,9 @@ public final class MiscUtils {
     }
 
     public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Predicate<? super T> filter, int from,
-            boolean recursion) {
-        val items = item.getChildren();
+                                                     boolean recursion) {
         for (int i = from, end = item.size(); i < end; ++i) {
-            T sub = items.get(i);
+            T sub = item.get(i);
             if (filter.test(sub)) {
                 return sub;
             }
@@ -119,10 +114,10 @@ public final class MiscUtils {
     }
 
     public static <T extends Hierarchical<T>> int select(@NonNull T item,
-            @NonNull Predicate<? super T> filter,
-            @NonNull List<? super T> result,
-            int limit,
-            boolean recursion) {
+                                                         @NonNull Predicate<? super T> filter,
+                                                         @NonNull List<? super T> result,
+                                                         int limit,
+                                                         boolean recursion) {
         if (limit <= 0) {
             return 0;
         }
