@@ -16,7 +16,7 @@
 
 package jclp.util;
 
-public interface Hierarchical<T extends Hierarchical<T>> extends Iterable<T> {
+public interface Hierarchial<T extends Hierarchial<T>> extends Iterable<T> {
     int size();
 
     T get(int index);

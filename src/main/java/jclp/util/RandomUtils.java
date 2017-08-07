@@ -16,21 +16,30 @@
 
 package jclp.util;
 
+import java.util.List;
 import java.util.Random;
+
+import lombok.val;
 
 public final class RandomUtils {
     private RandomUtils() {
     }
 
-    private static final Random random = new Random();
+    private static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
+        protected Random initialValue() {
+            return new Random();
+        };
+    };
 
     public static int randInteger() {
+        val random = RandomUtils.random.get();
         random.setSeed(System.currentTimeMillis());
         return random.nextInt();
     }
 
     public static int randInteger(int bottom, int top) {
         Validate.require(top >= bottom, "top(%s) must >= bottom(%s)", top, bottom);
+        val random = RandomUtils.random.get();
         random.setSeed(System.currentTimeMillis());
         return random.nextInt(top - bottom) + bottom;
     }
@@ -40,5 +49,12 @@ public final class RandomUtils {
             return null;
         }
         return items[randInteger(0, items.length)];
+    }
+
+    public static <T> T anyOf(List<T> items) {
+        if (items == null || items.size() == 0) {
+            return null;
+        }
+        return items.get(randInteger(0, items.size()));
     }
 }

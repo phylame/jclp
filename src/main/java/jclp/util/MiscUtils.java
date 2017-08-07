@@ -58,21 +58,21 @@ public final class MiscUtils {
         return new Locale(language, country);
     }
 
-    public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull Collection<Integer> indices) {
+    public static <T extends Hierarchial<T>> T locate(@NonNull T item, @NonNull Collection<Integer> indices) {
         for (val index : indices) {
             item = item.get(index < 0 ? item.size() + index : index);
         }
         return item;
     }
 
-    public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull int[] indices) {
+    public static <T extends Hierarchial<T>> T locate(@NonNull T item, @NonNull int[] indices) {
         for (val index : indices) {
             item = item.get(index < 0 ? item.size() + index : index);
         }
         return item;
     }
 
-    public static <T extends Hierarchical<T>> int depthOf(@NonNull T item) {
+    public static <T extends Hierarchial<T>> int depthOf(@NonNull T item) {
         if (item.size() == 0) {
             return 0;
         }
@@ -88,11 +88,11 @@ public final class MiscUtils {
         return depth + 1;
     }
 
-    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Predicate<? super T> filter) {
+    public static <T extends Hierarchial<T>> T find(@NonNull T item, @NonNull Predicate<? super T> filter) {
         return find(item, filter, 0, false);
     }
 
-    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Predicate<? super T> filter, int from,
+    public static <T extends Hierarchial<T>> T find(@NonNull T item, @NonNull Predicate<? super T> filter, int from,
                                                      boolean recursion) {
         for (int i = from, end = item.size(); i < end; ++i) {
             T sub = item.get(i);
@@ -109,11 +109,11 @@ public final class MiscUtils {
         return null;
     }
 
-    public static <T extends Hierarchical<T>> int select(T item, Predicate<? super T> filter, List<? super T> result) {
+    public static <T extends Hierarchial<T>> int select(T item, Predicate<? super T> filter, List<? super T> result) {
         return select(item, filter, result, -1, true);
     }
 
-    public static <T extends Hierarchical<T>> int select(@NonNull T item,
+    public static <T extends Hierarchial<T>> int select(@NonNull T item,
                                                          @NonNull Predicate<? super T> filter,
                                                          @NonNull List<? super T> result,
                                                          int limit,

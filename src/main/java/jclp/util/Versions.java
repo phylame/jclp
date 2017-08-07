@@ -18,7 +18,7 @@ package jclp.util;
 
 public final class Versions {
     public static final int jvmVersion;
-    public static final String jclpVersion = "2.1.0";
+    public static final String jclpVersion = "2.1.1";
 
     static {
         jvmVersion = Runtime.class.getPackage().getSpecificationVersion().charAt(2) - '0';
