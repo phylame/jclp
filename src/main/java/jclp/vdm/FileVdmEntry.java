@@ -16,14 +16,12 @@
 
 package jclp.vdm;
 
-import lombok.NonNull;
-
 import java.io.File;
 import java.io.OutputStream;
 
-public class FileVdmEntry implements VdmEntry {
-    static final String COMMENT_FILE = ".__FVECOMM__";
+import lombok.NonNull;
 
+public class FileVdmEntry implements VdmEntry {
     final File file;
     final FileVdmReader reader;
     OutputStream stream;

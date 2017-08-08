@@ -16,15 +16,19 @@
 
 package jclp.vdm;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+
 import jclp.function.Consumer;
 import jclp.io.FileUtils;
 import jclp.util.Validate;
 import lombok.NonNull;
 import lombok.val;
-
-import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
 
 public class FileVdmReader implements VdmReader {
     private final File dir;
@@ -60,12 +64,7 @@ public class FileVdmReader implements VdmReader {
 
     @Override
     public String getComment() {
-        ensureOpen();
-        try {
-            return FileUtils.toString(new File(this.dir, FileVdmEntry.COMMENT_FILE));
-        } catch (IOException e) {
-            return null;
-        }
+        return null;
     }
 
     @Override
@@ -97,9 +96,7 @@ public class FileVdmReader implements VdmReader {
         FileUtils.walkDir(dir, new Consumer<File>() {
             @Override
             public void accept(File file) {
-                if (!file.getName().equals(FileVdmEntry.COMMENT_FILE)) {
-                    items.add(new FileVdmEntry(file, FileVdmReader.this));
-                }
+                items.add(new FileVdmEntry(file, FileVdmReader.this));
             }
         });
         return items;
@@ -127,9 +124,7 @@ public class FileVdmReader implements VdmReader {
 
         @Override
         public void accept(File file) {
-            if (!file.getName().equals(FileVdmEntry.COMMENT_FILE)) {
-                ++count;
-            }
+            ++count;
         }
     }
 }

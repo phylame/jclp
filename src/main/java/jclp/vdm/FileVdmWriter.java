@@ -16,19 +16,20 @@
 
 package jclp.vdm;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.List;
+
 import jclp.io.IOUtils;
-import jclp.log.Log;
 import jclp.util.Validate;
 import lombok.NonNull;
 import lombok.val;
 
-import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
-
 public class FileVdmWriter implements VdmWriter {
-    private static final String TAG = "FileVdmWriter";
-
     private final File dir;
     private final List<FileOutputStream> outputs = new LinkedList<>();
 
@@ -46,12 +47,7 @@ public class FileVdmWriter implements VdmWriter {
     }
 
     @Override
-    public void setComment(@NonNull String comment) {
-        try (val out = IOUtils.writerFor(openOutput(new File(dir, FileVdmEntry.COMMENT_FILE)))) {
-            out.write(comment);
-        } catch (IOException e) {
-            Log.e(TAG, "cannot write comment to {}", this);
-        }
+    public void setComment(String comment) {
     }
 
     private FileOutputStream openOutput(File file) throws IOException {
