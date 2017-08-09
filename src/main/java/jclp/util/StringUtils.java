@@ -16,16 +16,16 @@
 
 package jclp.util;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import jclp.text.Render;
 import jclp.text.StringJoiner;
 import jclp.value.Pair;
 import lombok.NonNull;
 import lombok.val;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 public final class StringUtils {
     private StringUtils() {
@@ -165,13 +165,29 @@ public final class StringUtils {
         int st = 0;
 
         char ch;
-        while ((st < len) && (((ch = cs.charAt(st)) <= ' ') || (ch == CHINESE_SPACE))) {
+        while (st < len && (((ch = cs.charAt(st)) <= ' ') || (ch == CHINESE_SPACE))) {
             st++;
         }
-        while ((st < len) && (((ch = cs.charAt(len - 1)) <= ' ') || (ch == CHINESE_SPACE))) {
+        while (st < len && (((ch = cs.charAt(len - 1)) <= ' ') || (ch == CHINESE_SPACE))) {
             len--;
         }
-        return ((st > 0) || (len < cs.length())) ? cs.subSequence(st, len).toString() : toString(cs);
+        return st > 0 || len < cs.length() ? cs.subSequence(st, len).toString() : toString(cs);
+    }
+
+    public static String stripped(CharSequence cs, String pattern) {
+        val str = toString(cs);
+        if (isEmpty(cs) || isEmpty(pattern)) {
+            return str;
+        }
+        int st = 0;
+        int len = cs.length();
+        while (st < len && pattern.indexOf(cs.charAt(st)) != -1) {
+            st++;
+        }
+        while (st < len && pattern.indexOf(cs.charAt(len - 1)) != -1) {
+            len--;
+        }
+        return st > 0 || len < str.length() ? str.substring(st, len) : str;
     }
 
     public static <T> String duplicated(T obj, int count) {
@@ -207,7 +223,7 @@ public final class StringUtils {
         if (iterator == null) {
             return "";
         }
-        return StringJoiner.<T>builder()
+        return StringJoiner.<T> builder()
                 .iterator(iterator)
                 .separator(separator)
                 .transform(transform)
@@ -218,7 +234,7 @@ public final class StringUtils {
     /**
      * Returns list of lines split from specified string.
      *
-     * @param cs        the input string
+     * @param cs the input string
      * @param skipEmpty {@literal true} to skip empty line
      * @return list of lines, never {@code null}
      * @throws NullPointerException if the {@code cs} is {@code null}
@@ -233,7 +249,7 @@ public final class StringUtils {
         int i, begin = 0;
         val end = cs.length();
         CharSequence sub;
-        for (i = 0; i < end; ) {
+        for (i = 0; i < end;) {
             val ch = cs.charAt(i);
             if ('\n' == ch) { // \n
                 sub = cs.subSequence(begin, i);
@@ -283,8 +299,8 @@ public final class StringUtils {
     }
 
     public static List<Pair<String, String>> getNamedPairs(@NonNull String str,
-                                                           @NonNull String partSeparator,
-                                                           @NonNull String valueSeparator) {
+            @NonNull String partSeparator,
+            @NonNull String valueSeparator) {
         val pairs = new ArrayList<Pair<String, String>>();
         for (val part : str.split(partSeparator)) {
             pairs.add(partition(part, valueSeparator));
@@ -301,10 +317,10 @@ public final class StringUtils {
     }
 
     public static String valueOfName(@NonNull String str,
-                                     @NonNull String name,
-                                     @NonNull String partSeparator,
-                                     @NonNull String valueSeparator,
-                                     boolean ignoreCase) {
+            @NonNull String name,
+            @NonNull String partSeparator,
+            @NonNull String valueSeparator,
+            boolean ignoreCase) {
         for (val part : str.split(partSeparator)) {
             val index = part.trim().indexOf(valueSeparator);
             if (index != -1) {
@@ -326,10 +342,10 @@ public final class StringUtils {
     }
 
     public static String[] valuesOfName(@NonNull String str,
-                                        @NonNull String name,
-                                        @NonNull String partSeparator,
-                                        @NonNull String valueSeparator,
-                                        boolean ignoreCase) {
+            @NonNull String name,
+            @NonNull String partSeparator,
+            @NonNull String valueSeparator,
+            boolean ignoreCase) {
         val result = new ArrayList<String>();
         for (val part : str.split(partSeparator)) {
             val index = part.trim().indexOf(valueSeparator);

@@ -16,15 +16,29 @@
 
 package jclp.util;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.RandomAccess;
+import java.util.Set;
+
+import jclp.function.BiFunction;
 import jclp.function.Function;
 import jclp.function.Predicate;
 import jclp.io.IOUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-
-import java.io.IOException;
-import java.util.*;
 
 public final class CollectionUtils {
     private CollectionUtils() {
@@ -99,11 +113,15 @@ public final class CollectionUtils {
         return obj;
     }
 
-    public static <E, T> Iterator<T> map(@NonNull Iterator<E> i, @NonNull Function<? super E, ? extends T> transform) {
-        return new MappingIterator<>(i, transform);
+    public static <E, T> Iterator<T> map(Iterator<E> i, Function<? super E, ? extends T> transform) {
+        return new MapIterator<>(i, transform);
     }
 
-    public static <E> Iterator<E> filter(@NonNull Iterator<E> i, @NonNull Predicate<? super E> filter) {
+    public static <E, T> Iterator<T> mapIndexed(Iterator<E> i, BiFunction<? super E, Integer, ? extends T> transform) {
+        return new IndexedMapIterator<>(i, transform);
+    }
+
+    public static <E> Iterator<E> filter(Iterator<E> i, Predicate<? super E> filter) {
         return new FilterIterator<>(i, filter);
     }
 
@@ -265,7 +283,7 @@ public final class CollectionUtils {
         }
         val size = c.size();
         Validate.require(size % 2 == 0, "length(%d) of objects must % 2 = 0", size);
-        for (Iterator<?> i = c.iterator(); i.hasNext(); ) {
+        for (Iterator<?> i = c.iterator(); i.hasNext();) {
             m.put((K) i.next(), (V) i.next());
         }
     }
@@ -321,10 +339,12 @@ public final class CollectionUtils {
     }
 
     @RequiredArgsConstructor
-    private static class MappingIterator<E, T> implements Iterator<T> {
+    private static class MapIterator<E, T> implements Iterator<T> {
+        @NonNull
         private final Iterator<E> source;
 
-        private final Function<? super E, ? extends T> filter;
+        @NonNull
+        private final Function<? super E, ? extends T> transform;
 
         @Override
         public boolean hasNext() {
@@ -333,7 +353,33 @@ public final class CollectionUtils {
 
         @Override
         public T next() {
-            return filter.apply(source.next());
+            return transform.apply(source.next());
+        }
+
+        @Override
+        public void remove() {
+            source.remove();
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static class IndexedMapIterator<E, T> implements Iterator<T> {
+        @NonNull
+        private final Iterator<E> source;
+
+        @NonNull
+        private final BiFunction<? super E, Integer, ? extends T> transform;
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return source.hasNext();
+        }
+
+        @Override
+        public T next() {
+            return transform.apply(source.next(), index++);
         }
 
         @Override
@@ -344,8 +390,10 @@ public final class CollectionUtils {
 
     @RequiredArgsConstructor
     private static class FilterIterator<E> implements Iterator<E> {
+        @NonNull
         private final Iterator<E> source;
 
+        @NonNull
         private final Predicate<? super E> filter;
 
         private E next;
