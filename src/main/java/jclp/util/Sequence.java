@@ -1,18 +1,29 @@
 package jclp.util;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import jclp.function.BiFunction;
 import jclp.function.Function;
 import jclp.function.Predicate;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+
 @RequiredArgsConstructor
 public class Sequence<E> {
+    @Getter
     @NonNull
     private final Iterator<? extends E> iterator;
+
+    public Sequence(Collection<? extends E> c) {
+        this(c.iterator());
+    }
+
+    public Sequence(Enumeration<? extends E> e) {
+        this(CollectionUtils.iterator(e));
+    }
 
     public <T> Sequence<T> map(@NonNull Function<? super E, ? extends T> transform) {
         return new Sequence<>(CollectionUtils.map(iterator, transform));
