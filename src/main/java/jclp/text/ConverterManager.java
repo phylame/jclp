@@ -91,28 +91,28 @@ public final class ConverterManager {
     public static void registerDefaults() {
         registerConverter(Object.class, new DefaultConverter<>(Object.class));
         registerConverter(Locale.class, new DefaultConverter<>(Locale.class));
-        registerParser(String.class, new DefaultConverter<>(String.class));
+        registerConverter(String.class, new DefaultConverter<>(String.class));
         registerConverter(Date.class, new DefaultConverter<>(Date.class));
         val byteConverter = new DefaultConverter<Byte>(Byte.class);
-        registerParser(Byte.class, byteConverter);
+        registerConverter(Byte.class, byteConverter);
         registerConverter(byte.class, byteConverter);
         val shortConverter = new DefaultConverter<Short>(Short.class);
-        registerParser(Short.class, shortConverter);
+        registerConverter(Short.class, shortConverter);
         registerConverter(short.class, shortConverter);
         val integerConverter = new DefaultConverter<Integer>(Integer.class);
-        registerParser(Integer.class, integerConverter);
+        registerConverter(Integer.class, integerConverter);
         registerConverter(int.class, integerConverter);
         val longConverter = new DefaultConverter<Long>(Long.class);
-        registerParser(Long.class, longConverter);
+        registerConverter(Long.class, longConverter);
         registerConverter(long.class, longConverter);
         val floatConverter = new DefaultConverter<Float>(Float.class);
-        registerParser(Float.class, floatConverter);
+        registerConverter(Float.class, floatConverter);
         registerConverter(float.class, floatConverter);
         val doubleConverter = new DefaultConverter<Double>(Double.class);
-        registerParser(Double.class, doubleConverter);
+        registerConverter(Double.class, doubleConverter);
         registerConverter(double.class, doubleConverter);
         val booleanConverter = new DefaultConverter<Boolean>(Boolean.class);
-        registerParser(Boolean.class, booleanConverter);
+        registerConverter(Boolean.class, booleanConverter);
         registerConverter(boolean.class, booleanConverter);
     }
 

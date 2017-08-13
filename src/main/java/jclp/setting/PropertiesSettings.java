@@ -128,7 +128,11 @@ public class PropertiesSettings extends AbstractSettings implements PersistableS
     }
 
     public void sync(@NonNull Writer writer) throws IOException {
-        values.store(writer, null);
+        val props = (Properties) values.clone();
+        for (val e : props.entrySet()) {
+            e.setValue(Converters.render(e.getValue()));
+        }
+        props.store(writer, null);
     }
 
     private void initValues() {
