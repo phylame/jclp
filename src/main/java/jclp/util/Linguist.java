@@ -24,11 +24,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 
-import java.text.MessageFormat;
 import java.util.*;
 
 @RequiredArgsConstructor
-public final class Linguist implements FallbackTranslator {
+public final class Linguist extends AbstractTranslator implements FallbackTranslator {
     @NonNull
     private final String path;
     private final Locale locale;
@@ -57,7 +56,8 @@ public final class Linguist implements FallbackTranslator {
         }
     });
 
-    private String getString(String key) {
+    @Override
+    public String tr(String key) {
         try {
             return bundle.get().getString(key);
         } catch (MissingResourceException e) {
@@ -71,30 +71,6 @@ public final class Linguist implements FallbackTranslator {
             }
             throw e;
         }
-    }
-
-    @Override
-    public String tr(String key) {
-        return getString(key);
-    }
-
-    @Override
-    public String optTr(String key, String fallback) {
-        try {
-            return StringUtils.coalesce(getString(key), fallback);
-        } catch (MissingResourceException e) {
-            return fallback;
-        }
-    }
-
-    @Override
-    public String tr(String key, Object... args) {
-        return MessageFormat.format(tr(key), args);
-    }
-
-    @Override
-    public String optTr(String key, String fallback, Object... args) {
-        return MessageFormat.format(optTr(key, fallback), args);
     }
 
     private static class EmptyBundle extends ResourceBundle {
