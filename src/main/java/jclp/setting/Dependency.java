@@ -16,10 +16,11 @@
 
 package jclp.setting;
 
-import jclp.function.Predicate;
 import jclp.Keyed;
 import lombok.Data;
 import lombok.NonNull;
+
+import java.util.function.Predicate;
 
 @Data
 public class Dependency implements Keyed<String> {

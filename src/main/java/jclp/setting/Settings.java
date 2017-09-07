@@ -17,10 +17,11 @@
 package jclp.setting;
 
 import jclp.value.Pair;
+import lombok.val;
 
 import java.util.Map;
 
-public interface Settings extends Iterable<Pair<String, ?>> {
+public interface Settings extends Iterable<Pair<String, Object>> {
     boolean isEnable(String key);
 
     Object get(String key);
@@ -31,9 +32,17 @@ public interface Settings extends Iterable<Pair<String, ?>> {
 
     Object set(String key, Object value);
 
-    void update(Map<String, ?> values);
+    default void update(Map<String, ?> values) {
+        for (val entry : values.entrySet()) {
+            set(entry.getKey(), entry.getValue());
+        }
+    }
 
-    void update(Settings settings);
+    default void update(Settings settings) {
+        for (val entry : settings) {
+            set(entry.getFirst(), entry.getSecond());
+        }
+    }
 
     Object remove(String key);
 

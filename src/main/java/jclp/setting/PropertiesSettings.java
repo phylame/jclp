@@ -16,10 +16,9 @@
 
 package jclp.setting;
 
-import jclp.function.Function;
+import jclp.Validate;
 import jclp.io.IOUtils;
 import jclp.text.Converters;
-import jclp.Validate;
 import jclp.value.Pair;
 import lombok.NonNull;
 import lombok.ToString;
@@ -28,11 +27,9 @@ import lombok.val;
 import java.io.*;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 import static jclp.CollectionUtils.isEmpty;
-import static jclp.CollectionUtils.map;
 
 @ToString(callSuper = true)
 public class PropertiesSettings extends AbstractSettings implements PersistableSettings {
@@ -103,13 +100,11 @@ public class PropertiesSettings extends AbstractSettings implements PersistableS
     }
 
     @Override
-    public Iterator<Pair<String, ?>> iterator() {
-        return map(values.entrySet().iterator(), new Function<Map.Entry<Object, Object>, Pair<String, ?>>() {
-            @Override
-            public Pair<String, ?> apply(Entry<Object, Object> entry) {
-                return new Pair<>(entry.getKey().toString(), entry.getValue());
-            }
-        });
+    public Iterator<Pair<String, Object>> iterator() {
+        return values.entrySet()
+                .stream()
+                .map(e -> new Pair<>(e.getKey().toString(), e.getValue()))
+                .iterator();
     }
 
     @Override

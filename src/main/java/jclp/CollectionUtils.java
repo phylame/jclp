@@ -18,6 +18,7 @@ package jclp;
 
 import jclp.io.IOUtils;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.io.IOException;
@@ -47,6 +48,17 @@ public final class CollectionUtils {
 
     public static boolean isNotEmpty(Map<?, ?> c) {
         return c != null && !c.isEmpty();
+    }
+
+    public static <E> E getFirst(Collection<E> c) {
+        if (isEmpty(c)) {
+            return null;
+        } else if (c instanceof List) {
+            val list = (List<E>) c;
+            return list.isEmpty() ? null : list.get(0);
+        }
+        val it = c.iterator();
+        return it.hasNext() ? it.next() : null;
     }
 
     public static <K, V> V getOrElse(@NonNull Map<K, V> m, K key, Function<K, ? extends V> creator) {
@@ -123,6 +135,14 @@ public final class CollectionUtils {
         }
     }
 
+    public static <E> Iterator<E> iterator(@NonNull Enumeration<E> e) {
+        return new EnumerationIterator<>(e);
+    }
+
+    public static <E> Iterable<E> iterable(@NonNull Iterator<E> it) {
+        return () -> it;
+    }
+
     @SafeVarargs
     public static <E> List<E> listOf(E... items) {
         return Arrays.asList(items);
@@ -189,6 +209,17 @@ public final class CollectionUtils {
         return Collections.unmodifiableMap(map);
     }
 
+    public static <K, T extends Keyed<K>> Map<K, T> toMap(Collection<T> items) {
+        if (isEmpty(items)) {
+            return null;
+        }
+        val map = new HashMap<K, T>();
+        for (val item : items) {
+            map.put(item.getKey(), item);
+        }
+        return map;
+    }
+
     @SuppressWarnings("unchecked")
     public static <K, V> void fillMap(@NonNull Map<K, V> m, Object... objects) {
         if (ArrayUtils.isEmpty(objects)) {
@@ -229,5 +260,20 @@ public final class CollectionUtils {
             return prop;
         }
         return null;
+    }
+
+    @RequiredArgsConstructor
+    private static class EnumerationIterator<E> implements Iterator<E> {
+        private final Enumeration<E> e;
+
+        @Override
+        public boolean hasNext() {
+            return e.hasMoreElements();
+        }
+
+        @Override
+        public E next() {
+            return e.nextElement();
+        }
     }
 }

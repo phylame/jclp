@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
+import jclp.CollectionUtils;
 import jclp.function.Predicate;
 import jclp.log.Level;
 import jclp.log.Log;
 import jclp.setting.Definition;
 import jclp.setting.Dependency;
 import jclp.setting.PropertiesSettings;
-import jclp.MiscUtils;
 import lombok.val;
 
 import java.io.FileReader;
@@ -45,7 +45,7 @@ public class Test {
                 .build();
         d.add(def);
         try (val r = new FileReader("E:/tmp/x.txt")) {
-            val ps = new PropertiesSettings(r, MiscUtils.toMap(d));
+            val ps = new PropertiesSettings(r, CollectionUtils.toMap(d));
             System.out.println(ps);
             System.out.println(ps.get("salary"));
             System.out.println(ps.isEnable("salary"));

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package jclp;
+package jclp.spi;
 
-public interface Hierarchial<T extends Hierarchial<T>> extends Iterable<T> {
-    int size();
+import java.util.Set;
 
-    T get(int index);
+public interface NamedService {
+    String getName();
 
-    T getParent();
+    Set<String> getNames();
 }

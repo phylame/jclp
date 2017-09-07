@@ -16,7 +16,7 @@
 
 package jclp.vdm;
 
-import jclp.NamedService;
+import jclp.spi.NamedService;
 
 import java.io.IOException;
 
