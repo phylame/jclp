@@ -19,7 +19,7 @@ package jclp.setting;
 import jclp.function.Function;
 import jclp.io.IOUtils;
 import jclp.text.Converters;
-import jclp.util.Validate;
+import jclp.Validate;
 import jclp.value.Pair;
 import lombok.NonNull;
 import lombok.ToString;
@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import static jclp.util.CollectionUtils.isEmpty;
-import static jclp.util.CollectionUtils.map;
+import static jclp.CollectionUtils.isEmpty;
+import static jclp.CollectionUtils.map;
 
 @ToString(callSuper = true)
 public class PropertiesSettings extends AbstractSettings implements PersistableSettings {

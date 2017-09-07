@@ -14,55 +14,37 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp.i18n;
 
-import jclp.function.Provider;
-import jclp.value.Lazy;
-import jclp.value.Values;
-import lombok.NonNull;
+import jclp.CollectionUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.val;
 
 import java.util.*;
 
 @RequiredArgsConstructor
-public final class Linguist extends AbstractTranslator implements FallbackTranslator {
-    @NonNull
-    private final String path;
+public class Linguist implements AttachableTranslator {
+    private final String name;
     private final Locale locale;
     private final ClassLoader loader;
 
-    @Setter
-    private List<? extends Translator> translators;
+    private final Set<Translator> attachments = new LinkedHashSet<>();
 
     public Linguist(String path) {
-        this(path, null);
+        this(path, Locale.getDefault(), getDefaultClassLoader());
     }
 
-    public Linguist(@NonNull String path, Locale locale) {
-        this(path, locale, null);
+    public Linguist(String path, Locale locale) {
+        this(path, locale, getDefaultClassLoader());
     }
-
-    private final Lazy<ResourceBundle> bundle = Values.lazy(new Provider<ResourceBundle>() {
-        @Override
-        public ResourceBundle provide() throws Exception {
-            try {
-                val l = locale != null ? locale : Locale.getDefault();
-                return loader != null ? ResourceBundle.getBundle(path, l, loader) : ResourceBundle.getBundle(path, l);
-            } catch (Exception e) {
-                return EmptyBundle.EMPTY_BUNDLE;
-            }
-        }
-    });
 
     @Override
-    public String tr(String key) {
+    public String tr(String key) throws MissingResourceException {
         try {
-            return bundle.get().getString(key);
+            return getBundle().getString(key);
         } catch (MissingResourceException e) {
-            if (CollectionUtils.isNotEmpty(translators)) {
-                for (val translator : translators) {
+            if (CollectionUtils.isNotEmpty(attachments)) {
+                for (val translator : attachments) {
                     try {
                         return translator.tr(key);
                     } catch (MissingResourceException ignored) {
@@ -73,8 +55,32 @@ public final class Linguist extends AbstractTranslator implements FallbackTransl
         }
     }
 
-    private static class EmptyBundle extends ResourceBundle {
-        private static final EmptyBundle EMPTY_BUNDLE = new EmptyBundle();
+    @Override
+    public void attach(Translator... translators) {
+        Collections.addAll(attachments, translators);
+    }
+
+    @Override
+    public void detach(Translator... translators) {
+        for (val translator : translators) {
+            attachments.remove(translator);
+        }
+    }
+
+    protected ResourceBundle getBundle() {
+        try {
+            return ResourceBundle.getBundle(name, locale, loader);
+        } catch (MissingResourceException e) {
+            return DummyBundle.INSTANCE;
+        }
+    }
+
+    private static ClassLoader getDefaultClassLoader() {
+        return Linguist.class.getClassLoader();
+    }
+
+    private static class DummyBundle extends ResourceBundle {
+        private static final DummyBundle INSTANCE = new DummyBundle();
 
         @Override
         protected Object handleGetObject(String key) {

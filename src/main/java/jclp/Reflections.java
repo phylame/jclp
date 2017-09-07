@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp;
 
 import jclp.function.Predicate;
 import lombok.Builder;
@@ -28,8 +28,8 @@ import java.util.List;
 
 import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
-import static jclp.util.StringUtils.capitalized;
-import static jclp.util.StringUtils.isEmpty;
+import static jclp.StringUtils.capitalized;
+import static jclp.StringUtils.isEmpty;
 
 public final class Reflections {
     private Reflections() {

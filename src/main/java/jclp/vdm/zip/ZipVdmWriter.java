@@ -27,7 +27,7 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static jclp.util.Validate.require;
+import static jclp.Validate.require;
 
 @RequiredArgsConstructor
 public class ZipVdmWriter implements VdmWriter {

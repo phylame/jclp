@@ -14,16 +14,29 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp.i18n;
 
+import jclp.StringUtils;
+
+import java.text.MessageFormat;
 import java.util.MissingResourceException;
 
 public interface Translator {
     String tr(String key) throws MissingResourceException;
 
-    String optTr(String key, String fallback);
+    default String optTr(String key, String fallback) {
+        try {
+            return StringUtils.coalesce(tr(key), fallback);
+        } catch (MissingResourceException e) {
+            return fallback;
+        }
+    }
 
-    String tr(String key, Object... args) throws MissingResourceException;
+    default String tr(String key, Object... args) throws MissingResourceException {
+        return MessageFormat.format(tr(key), args);
+    }
 
-    String optTr(String key, String fallback, Object... args);
+    default String optTr(String key, String fallback, Object... args) {
+        return MessageFormat.format(optTr(key, fallback), args);
+    }
 }

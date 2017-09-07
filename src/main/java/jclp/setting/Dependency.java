@@ -17,7 +17,7 @@
 package jclp.setting;
 
 import jclp.function.Predicate;
-import jclp.util.Keyed;
+import jclp.Keyed;
 import lombok.Data;
 import lombok.NonNull;
 

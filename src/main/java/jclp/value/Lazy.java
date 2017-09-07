@@ -16,42 +16,28 @@
 
 package jclp.value;
 
-import jclp.function.Provider;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.function.Supplier;
+
 @RequiredArgsConstructor
-public final class Lazy<T> implements Value<T> {
+public class Lazy<T> implements Value<T> {
+    @NonNull
+    private final Supplier<? extends T> supplier;
+
     @Getter
     private volatile boolean initialized = false;
 
-    @NonNull
-    private final Provider<? extends T> provider;
-
-    private final Value<? extends T> fallback;
-
-    @Getter
-    private Exception error = null;
-
     private T value = null;
 
-    public Lazy(@NonNull Provider<? extends T> provider) {
-        this.provider = provider;
-        this.fallback = null;
-    }
-
     @Override
-    public final T get() {
+    public T get() {
         if (!initialized) {
             synchronized (this) {
                 if (!initialized) {
-                    try {
-                        value = provider.provide();
-                    } catch (Exception e) {
-                        value = Values.get(fallback);
-                        error = e;
-                    }
+                    value = supplier.get();
                     initialized = true;
                 }
             }

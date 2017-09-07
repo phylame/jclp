@@ -14,28 +14,50 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp;
 
+import jclp.value.Lazy;
 import lombok.NonNull;
 import lombok.val;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Utilities for date.
+ */
 public final class DateUtils {
     private DateUtils() {
     }
 
     public static final String ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String ANSIC_FORMAT = "EEE MMM d HH:mm:ss z yyyy";
+
     public static final String RFC1123_FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
 
     public static final String RFC1036_FORMAT = "EEEEEE, dd-MMM-yy HH:mm:ss z";
 
-    public static final String ANSIC_FORMAT = "EEE MMM d HH:mm:ss z yyyy";
+    public static final String LOOSE_ISO_TIME_FORMAT = "H:m:s";
+
+    public static final String LOOSE_ISO_DATE_FORMAT = "yyyy-M-d";
+
+    public static final String LOOSE_ISO_DATE_TIME_FORMAT = "yyyy-M-d H:m:s";
+
+    public static final Lazy<DateTimeFormatter> LOOSE_ISO_DATE = new Lazy<>(() -> {
+        return DateTimeFormatter.ofPattern(LOOSE_ISO_DATE_FORMAT);
+    });
+
+    public static final Lazy<DateTimeFormatter> LOOSE_ISO_TIME = new Lazy<>(() -> {
+        return DateTimeFormatter.ofPattern(LOOSE_ISO_TIME_FORMAT);
+    });
+
+    public static final Lazy<DateTimeFormatter> LOOSE_ISO_DATE_TIME = new Lazy<>(() -> {
+        return DateTimeFormatter.ofPattern(LOOSE_ISO_DATE_TIME_FORMAT);
+    });
 
     public static String toISO(@NonNull Date date) {
         return new SimpleDateFormat(ISO_FORMAT).format(date);
@@ -43,6 +65,14 @@ public final class DateUtils {
 
     public static Date forISO(@NonNull String str) throws ParseException {
         return new SimpleDateFormat(ISO_FORMAT).parse(str);
+    }
+
+    public static String toANSIC(@NonNull Date date) {
+        return new SimpleDateFormat(ANSIC_FORMAT, Locale.ENGLISH).format(date);
+    }
+
+    public static Date forANSIC(@NonNull String str) throws ParseException {
+        return new SimpleDateFormat(ANSIC_FORMAT, Locale.ENGLISH).parse(str);
     }
 
     public static String toRFC1123(@NonNull Date date) {
@@ -77,39 +107,8 @@ public final class DateUtils {
         return forRFC1036(str);
     }
 
-    public static String toANSIC(@NonNull Date date) {
-        return new SimpleDateFormat(ANSIC_FORMAT, Locale.ENGLISH).format(date);
-    }
-
-    public static Date forANSIC(@NonNull String str) throws ParseException {
-        return new SimpleDateFormat(ANSIC_FORMAT, Locale.ENGLISH).parse(str);
-    }
-
     public static String format(@NonNull Date date, @NonNull String format) {
         return new SimpleDateFormat(format).format(date);
-    }
-
-    public static Date parse(String str, Date fallback) {
-        if (StringUtils.isEmpty(str)) {
-            return fallback;
-        }
-        try {
-            return forISO(str);
-        } catch (ParseException ignored) {
-        }
-        try {
-            return forRFC1123(str);
-        } catch (ParseException ignored) {
-        }
-        try {
-            return forRFC1036(str);
-        } catch (ParseException ignored) {
-        }
-        try {
-            return forANSIC(str);
-        } catch (ParseException e) {
-            return fallback;
-        }
     }
 
     public static Date parse(@NonNull String str, @NonNull String format) throws ParseException {
@@ -122,9 +121,9 @@ public final class DateUtils {
         }
         try {
             return new SimpleDateFormat(format).parse(str);
-        } catch (ParseException e) {
-            return fallback;
+        } catch (ParseException ignored) {
         }
+        return fallback;
     }
 
     public static Date parse(@NonNull String str, String... formats) {
@@ -135,41 +134,5 @@ public final class DateUtils {
             }
         }
         throw new IllegalArgumentException("Invalid date string: " + str);
-    }
-
-    public static Date calculate(@NonNull Date date, char unit, int amount) {
-        final int field;
-        switch (unit) {
-            case 'y':
-            case 'Y':
-                field = Calendar.YEAR;
-                break;
-            case 'm':
-            case 'M':
-                field = Calendar.MONTH;
-                break;
-            case 'd':
-            case 'D':
-                field = Calendar.DAY_OF_MONTH;
-                break;
-            case 'h':
-            case 'H':
-                field = Calendar.HOUR_OF_DAY;
-                break;
-            case 'n':
-            case 'N':
-                field = Calendar.MINUTE;
-                break;
-            case 's':
-            case 'S':
-                field = Calendar.SECOND;
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("Invalid field type: %s, available: yYmMdDhHnNsS", unit));
-        }
-        val calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(field, amount);
-        return calendar.getTime();
     }
 }

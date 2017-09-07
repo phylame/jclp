@@ -16,7 +16,7 @@
 
 package jclp.vdm;
 
-import jclp.util.ServiceManager;
+import jclp.ServiceManager;
 import lombok.val;
 
 import java.io.IOException;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;

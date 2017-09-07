@@ -16,21 +16,14 @@
 
 package jclp.value;
 
-import jclp.function.Function;
-import jclp.function.Provider;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 import java.lang.ref.Reference;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public final class Values {
     private Values() {
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T get(Object value) {
-        return value instanceof Value<?> ? ((Value<T>) value).get() : (T) value;
     }
 
     public static <T> T get(Value<T> value) {
@@ -41,74 +34,28 @@ public final class Values {
         return value != null ? value.get() : fallback;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T get(Object value) {
+        return value instanceof Value<?> ? ((Value<T>) value).get() : (T) value;
+    }
+
     public static <T> Value<T> wrap(T value) {
-        return new WrapperValue<>(value);
+        return () -> value;
+    }
+
+    public static <T> Lazy<T> lazy(@NonNull Supplier<? extends T> supplier) {
+        return new Lazy<>(supplier);
+    }
+
+    public static <T> Value<T> supplier(@NonNull Supplier<? extends T> supplier) {
+        return supplier::get;
     }
 
     public static <T> Value<T> reference(@NonNull Reference<? extends T> reference) {
-        return new ReferenceValue<>(reference);
+        return reference::get;
     }
 
-    public static <T> Value<T> provider(@NonNull Provider<? extends T> provider) {
-        return new ProviderValue<>(provider);
-    }
-
-    public static <T> Value<T> observer(@NonNull Value<? extends T> value, @NonNull Function<? super T, ? extends T> observer) {
-        return new ObserverValue<>(value, observer);
-    }
-
-    public static <T> Lazy<T> lazy(Provider<? extends T> provider) {
-        return new Lazy<>(provider);
-    }
-
-    public static <T> Lazy<T> lazy(Provider<? extends T> provider, T fallback) {
-        return new Lazy<>(provider, wrap(fallback));
-    }
-
-    public static <T> Lazy<T> lazy(Provider<? extends T> provider, Value<? extends T> fallback) {
-        return new Lazy<>(provider, fallback);
-    }
-
-    @RequiredArgsConstructor
-    private static final class WrapperValue<T> implements Value<T> {
-        private final T value;
-
-        @Override
-        public T get() {
-            return value;
-        }
-    }
-
-    @RequiredArgsConstructor
-    private static final class ProviderValue<T> implements Value<T> {
-        private final Provider<? extends T> provider;
-
-        @Override
-        @SneakyThrows(Exception.class)
-        public T get() {
-            return provider.provide();
-        }
-    }
-
-    @RequiredArgsConstructor
-    private static final class ReferenceValue<T> implements Value<T> {
-        private final Reference<? extends T> reference;
-
-        @Override
-        public T get() {
-            return reference.get();
-        }
-    }
-
-    @RequiredArgsConstructor
-    private static final class ObserverValue<T> implements Value<T> {
-        private final Value<? extends T> value;
-
-        private final Function<? super T, ? extends T> observer;
-
-        @Override
-        public T get() {
-            return observer.apply(value.get());
-        }
+    public static <T> Value<T> observer(@NonNull Value<T> value, @NonNull Function<? super T, ? extends T> observer) {
+        return () -> observer.apply(value.get());
     }
 }

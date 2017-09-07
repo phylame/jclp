@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static jclp.util.Validate.require;
+import static jclp.Validate.require;
 
 @RequiredArgsConstructor
 public class FileVdmReader implements VdmReader {

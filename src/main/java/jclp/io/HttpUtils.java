@@ -16,13 +16,13 @@
 
 package jclp.io;
 
-import jclp.util.CollectionUtils;
-import jclp.util.StringUtils;
+import jclp.CollectionUtils;
+import jclp.StringUtils;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.SneakyThrows;
 import lombok.val;
-import jclp.util.Validate;
+import jclp.Validate;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

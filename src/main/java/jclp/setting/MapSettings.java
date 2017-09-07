@@ -25,7 +25,7 @@ import lombok.val;
 import java.util.Iterator;
 import java.util.Map;
 
-import static jclp.util.CollectionUtils.map;
+import static jclp.CollectionUtils.map;
 
 @RequiredArgsConstructor
 public class MapSettings implements Settings {

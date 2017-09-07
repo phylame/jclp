@@ -18,11 +18,10 @@
 import jclp.function.Predicate;
 import jclp.log.Level;
 import jclp.log.Log;
-import jclp.log.Slf4jFacade;
 import jclp.setting.Definition;
 import jclp.setting.Dependency;
 import jclp.setting.PropertiesSettings;
-import jclp.util.MiscUtils;
+import jclp.MiscUtils;
 import lombok.val;
 
 import java.io.FileReader;

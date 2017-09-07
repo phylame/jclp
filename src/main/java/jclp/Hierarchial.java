@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package jclp.function;
+package jclp;
 
-public interface Function<T, R> {
-    R apply(T arg);
+public interface Hierarchial<T extends Hierarchial<T>> extends Iterable<T> {
+    int size();
+
+    T get(int index);
+
+    T getParent();
 }

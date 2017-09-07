@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp.i18n;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,9 +35,7 @@ public class TranslatorWrapper implements Translator {
 
     @Override
     public String optTr(String key, String fallback) {
-        return translator != null
-                ? translator.optTr(key, fallback)
-                : fallback;
+        return translator != null ? translator.optTr(key, fallback) : fallback;
     }
 
     @Override
@@ -48,9 +46,7 @@ public class TranslatorWrapper implements Translator {
 
     @Override
     public String optTr(String key, String fallback, Object... args) {
-        return translator != null
-                ? translator.optTr(key, fallback, args)
-                : MessageFormat.format(fallback, args);
+        return translator != null ? translator.optTr(key, fallback, args) : MessageFormat.format(fallback, args);
     }
 
     private void checkTranslator() {

@@ -17,7 +17,6 @@
 package jclp.vdm.zip;
 
 import jclp.function.Function;
-import jclp.util.Sequence;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -30,7 +29,7 @@ import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static jclp.util.Validate.require;
+import static jclp.Validate.require;
 
 @RequiredArgsConstructor
 public class ZipVdmReader implements VdmReader {

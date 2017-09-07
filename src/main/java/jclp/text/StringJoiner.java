@@ -16,7 +16,7 @@
 
 package jclp.text;
 
-import jclp.util.StringUtils;
+import jclp.StringUtils;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.val;

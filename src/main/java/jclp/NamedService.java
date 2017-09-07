@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package jclp.cache;
+package jclp;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Set;
 
-@RequiredArgsConstructor
-final class RangeTag {
-    static final RangeTag EMPTY = new RangeTag(0, 0);
+public interface NamedService {
+    String getName();
 
-    final long offset;
-    final long length;
+    Set<String> getNames();
 }

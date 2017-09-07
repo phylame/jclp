@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp;
 
 import jclp.function.BiFunction;
 import jclp.io.IOUtils;
@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static jclp.util.Validate.checkNotNull;
-import static jclp.util.Validate.requireNotEmpty;
+import static jclp.Validate.checkNotNull;
+import static jclp.Validate.requireNotEmpty;
 
 public final class Implementor<T> {
     private static final String TAG = "Implementor";

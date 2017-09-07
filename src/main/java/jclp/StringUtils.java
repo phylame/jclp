@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp;
 
 import jclp.text.Render;
 import jclp.text.StringJoiner;
@@ -22,26 +22,20 @@ import jclp.value.Pair;
 import lombok.NonNull;
 import lombok.val;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public final class StringUtils {
     private StringUtils() {
     }
 
-    /**
-     * Chinese paragraph space character.
-     */
-    public static final char CHINESE_SPACE = '\u3000';
+    public static final char CHINESE_INDENT = '\u3000';
 
     public static boolean isEmpty(CharSequence cs) {
         return cs == null || cs.length() == 0;
     }
 
     public static boolean isNotEmpty(CharSequence cs) {
-        return !isEmpty(cs);
+        return cs != null && cs.length() != 0;
     }
 
     public static boolean isBlank(CharSequence cs) {
@@ -50,8 +44,7 @@ public final class StringUtils {
         }
         char ch;
         for (int i = 0, end = cs.length(); i != end; ++i) {
-            ch = cs.charAt(i);
-            if (ch != CHINESE_SPACE && !Character.isWhitespace(ch)) {
+            if ((ch = cs.charAt(i)) != CHINESE_INDENT && !Character.isWhitespace(ch)) {
                 return false;
             }
         }
@@ -98,16 +91,8 @@ public final class StringUtils {
         return true;
     }
 
-    public static String toString(Object obj) {
-        return obj != null ? obj.toString() : null;
-    }
-
-    public static String toString(Object obj, String fallback) {
-        return obj != null ? obj.toString() : fallback;
-    }
-
-    public static String coalesce(CharSequence cs, String fallback) {
-        return isNotEmpty(cs) ? cs.toString() : fallback;
+    public static String coalesce(CharSequence source, CharSequence fallback) {
+        return isNotEmpty(source) ? source.toString() : Objects.toString(fallback, null);
     }
 
     public static String coalesce(CharSequence cs, @NonNull String format, Object... args) {
@@ -122,7 +107,7 @@ public final class StringUtils {
      */
     public static String capitalized(CharSequence cs) {
         return isEmpty(cs)
-                ? toString(cs)
+                ? Objects.toString(cs, null)
                 : String.valueOf(Character.toTitleCase(cs.charAt(0))) + cs.subSequence(1, cs.length());
     }
 
@@ -134,13 +119,13 @@ public final class StringUtils {
      */
     public static String titled(CharSequence cs) {
         if (isEmpty(cs)) {
-            return toString(cs);
+            return Objects.toString(cs, null);
         }
         val b = new StringBuilder(cs.length());
         boolean isFirst = true;
+        char ch;
         for (int i = 0, end = cs.length(); i != end; ++i) {
-            char ch = cs.charAt(i);
-            if (ch != '\'' && ch != '"' && !Character.isLetter(ch)) {
+            if ((ch = cs.charAt(i)) != '\'' && ch != '"' && !Character.isLetter(ch)) {
                 isFirst = true;
             } else if (isFirst) {
                 ch = Character.toTitleCase(ch);
@@ -152,39 +137,39 @@ public final class StringUtils {
     }
 
     /**
-     * Like {@link String#trim()} but removes Chinese paragraph prefix (u3000).
+     * Like {@link String#trim()} but removes Chinese paragraph indent (u3000).
      *
      * @param cs the input string
      * @return the string removed space
      */
     public static String trimmed(CharSequence cs) {
         if (isEmpty(cs)) {
-            return toString(cs);
+            return Objects.toString(cs, null);
         }
         int len = cs.length();
         int st = 0;
 
         char ch;
-        while (st < len && (((ch = cs.charAt(st)) <= ' ') || (ch == CHINESE_SPACE))) {
+        while (st < len && (((ch = cs.charAt(st)) <= ' ') || (ch == CHINESE_INDENT))) {
             st++;
         }
-        while (st < len && (((ch = cs.charAt(len - 1)) <= ' ') || (ch == CHINESE_SPACE))) {
+        while (st < len && (((ch = cs.charAt(len - 1)) <= ' ') || (ch == CHINESE_INDENT))) {
             len--;
         }
-        return st > 0 || len < cs.length() ? cs.subSequence(st, len).toString() : toString(cs);
+        return st > 0 || len < cs.length() ? cs.subSequence(st, len).toString() : Objects.toString(cs, null);
     }
 
     public static String stripped(CharSequence cs, String pattern) {
-        val str = toString(cs);
-        if (isEmpty(cs) || isEmpty(pattern)) {
+        val str = Objects.toString(cs, null);
+        if (isEmpty(str) || isEmpty(pattern)) {
             return str;
         }
         int st = 0;
-        int len = cs.length();
-        while (st < len && pattern.indexOf(cs.charAt(st)) != -1) {
+        int len = str.length();
+        while (st < len && pattern.indexOf(str.charAt(st)) != -1) {
             st++;
         }
-        while (st < len && pattern.indexOf(cs.charAt(len - 1)) != -1) {
+        while (st < len && pattern.indexOf(str.charAt(len - 1)) != -1) {
             len--;
         }
         return st > 0 || len < str.length() ? str.substring(st, len) : str;

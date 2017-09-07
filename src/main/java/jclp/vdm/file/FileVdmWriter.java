@@ -27,9 +27,9 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import static jclp.util.Validate.check;
-import static jclp.util.Validate.checkNotNull;
-import static jclp.util.Validate.require;
+import static jclp.Validate.check;
+import static jclp.Validate.checkNotNull;
+import static jclp.Validate.require;
 
 @RequiredArgsConstructor
 public class FileVdmWriter implements VdmWriter {

@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp.i18n;
 
-public final class Versions {
-    public static final int jvmVersion;
-    public static final String jclpVersion = "2.1.1";
+public interface AttachableTranslator extends Translator {
+    void attach(Translator... translators);
 
-    static {
-        jvmVersion = Runtime.class.getPackage().getSpecificationVersion().charAt(2) - '0';
-    }
+    void detach(Translator... translators);
 }

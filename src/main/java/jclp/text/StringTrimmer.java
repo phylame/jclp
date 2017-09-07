@@ -17,7 +17,7 @@
 package jclp.text;
 
 import jclp.function.Function;
-import jclp.util.StringUtils;
+import jclp.StringUtils;
 
 public class StringTrimmer implements Render<String>, Function<String, String> {
     @Override

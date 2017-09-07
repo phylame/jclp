@@ -26,15 +26,15 @@ public final class Triple<A, B, C> {
     private final B second;
     private final C third;
 
-    public Triple<A, B, C> withFirst(A first) {
+    public <T> Triple<T, B, C> withFirst(T first) {
         return new Triple<>(first, second, third);
     }
 
-    public Triple<A, B, C> withSecond(B second) {
+    public <T> Triple<A, T, C> withSecond(T second) {
         return new Triple<>(first, second, third);
     }
 
-    public Triple<A, B, C> withThird(C third) {
+    public <T> Triple<A, B, T> withThird(T third) {
         return new Triple<>(first, second, third);
     }
 }

@@ -16,7 +16,7 @@
 
 package jclp.setting;
 
-import jclp.util.Validate;
+import jclp.Validate;
 import jclp.value.Values;
 import lombok.NonNull;
 import lombok.Setter;
@@ -25,8 +25,8 @@ import lombok.val;
 
 import java.util.Map;
 
-import static jclp.util.CollectionUtils.isEmpty;
-import static jclp.util.CollectionUtils.isNotEmpty;
+import static jclp.CollectionUtils.isEmpty;
+import static jclp.CollectionUtils.isNotEmpty;
 
 @ToString
 public abstract class AbstractSettings implements Settings {

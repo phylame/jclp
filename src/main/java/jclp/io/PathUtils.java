@@ -17,8 +17,8 @@
 package jclp.io;
 
 import jclp.function.Provider;
-import jclp.util.CollectionUtils;
-import jclp.util.StringUtils;
+import jclp.CollectionUtils;
+import jclp.StringUtils;
 import jclp.value.Lazy;
 import jclp.value.Pair;
 import jclp.value.Values;
@@ -81,7 +81,7 @@ public final class PathUtils {
     private static final Lazy<Properties> mimeMap = Values.lazy(new Provider<Properties>() {
         @Override
         public Properties provide() throws Exception {
-            return CollectionUtils.propertiesFor(MIME_MAPPING_FILE, PathUtils.class.getClassLoader());
+            return CollectionUtils.getProperties(MIME_MAPPING_FILE, PathUtils.class.getClassLoader());
         }
     }, new Properties());
 

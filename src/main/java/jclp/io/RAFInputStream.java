@@ -17,7 +17,7 @@
 package jclp.io;
 
 import lombok.NonNull;
-import jclp.util.Validate;
+import jclp.Validate;
 
 import java.io.IOException;
 import java.io.InputStream;

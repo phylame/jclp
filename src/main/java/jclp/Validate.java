@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp;
 
-import static jclp.util.StringUtils.isNotEmpty;
+import static jclp.StringUtils.isNotEmpty;
 
 /**
  * Utilities for validation.
@@ -150,7 +150,7 @@ public final class Validate {
     }
 
     public static void checkNotEmpty(CharSequence str, String msg, Object arg1, Object arg2) {
-        check(isNotEmpty(str), msg, arg1);
+        check(isNotEmpty(str), msg, arg1, arg2);
     }
 
     public static void checkNotEmpty(CharSequence str, String msg, Object... args) {

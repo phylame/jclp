@@ -16,7 +16,7 @@
 
 package jclp.value;
 
-import jclp.util.Keyed;
+import jclp.Keyed;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -27,14 +27,6 @@ import java.util.Map;
 public final class Pair<A, B> implements Map.Entry<A, B>, Keyed<A> {
     private final A first;
     private final B second;
-
-    public Pair<A, B> withFirst(A first) {
-        return new Pair<>(first, second);
-    }
-
-    public Pair<A, B> withSecond(B second) {
-        return new Pair<>(first, second);
-    }
 
     @Override
     public A getKey() {
@@ -49,5 +41,13 @@ public final class Pair<A, B> implements Map.Entry<A, B>, Keyed<A> {
     @Override
     public B setValue(B value) {
         throw new UnsupportedOperationException();
+    }
+
+    public <T> Pair<T, B> withFirst(T first) {
+        return new Pair<>(first, second);
+    }
+
+    public <T> Pair<A, T> withSecond(T second) {
+        return new Pair<>(first, second);
     }
 }

@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package jclp.util;
+package jclp;
 
-public interface Hierarchial<T extends Hierarchial<T>> extends Iterable<T> {
-    int size();
-
-    T get(int index);
-
-    T getParent();
+public interface Keyed<T> {
+    T getKey();
 }

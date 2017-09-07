@@ -16,7 +16,7 @@
 
 package jclp.vdm.zip;
 
-import jclp.util.CollectionUtils;
+import jclp.CollectionUtils;
 import lombok.NonNull;
 import jclp.vdm.VdmFactory;
 import jclp.vdm.VdmReader;

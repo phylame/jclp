@@ -17,9 +17,9 @@
 package jclp.io;
 
 import jclp.log.Log;
-import jclp.util.CollectionUtils;
-import jclp.util.MiscUtils;
-import jclp.util.Validate;
+import jclp.CollectionUtils;
+import jclp.MiscUtils;
+import jclp.Validate;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
