@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -15,8 +14,10 @@
  * limitations under the License.
  */
 
-public class Test {
-    public static void main(String[] args) throws Exception {
+package src.jclp.i18n;
 
-    }
+public interface AttachableTranslator extends Translator {
+    void attach(Translator... translators);
+
+    void detach(Translator... translators);
 }

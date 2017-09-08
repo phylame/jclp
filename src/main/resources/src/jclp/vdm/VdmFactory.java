@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -15,8 +14,14 @@
  * limitations under the License.
  */
 
-public class Test {
-    public static void main(String[] args) throws Exception {
+package src.jclp.vdm;
 
-    }
+import src.jclp.spi.NamedService;
+
+import java.io.IOException;
+
+public interface VdmFactory extends NamedService {
+    VdmReader getReader(Object input) throws IOException;
+
+    VdmWriter getWriter(Object output) throws IOException;
 }

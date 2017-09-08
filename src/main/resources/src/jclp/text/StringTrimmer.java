@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -15,8 +14,19 @@
  * limitations under the License.
  */
 
-public class Test {
-    public static void main(String[] args) throws Exception {
+package src.jclp.text;
 
+import jclp.function.Function;
+import src.jclp.StringUtils;
+
+public class StringTrimmer implements Render<String>, Function<String, String> {
+    @Override
+    public String render(String str) {
+        return StringUtils.trimmed(str);
+    }
+
+    @Override
+    public String apply(String str) {
+        return render(str);
     }
 }

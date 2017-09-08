@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -15,8 +14,16 @@
  * limitations under the License.
  */
 
-public class Test {
-    public static void main(String[] args) throws Exception {
+package src.jclp.log;
 
-    }
+public interface Facade {
+    void log(String tag, Level level, String msg);
+
+    void log(String tag, Level level, String format, Object arg1);
+
+    void log(String tag, Level level, String format, Object arg1, Object arg2);
+
+    void log(String tag, Level level, String format, Object... args);
+
+    void log(String tag, Level level, String msg, Throwable t);
 }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -15,8 +14,27 @@
  * limitations under the License.
  */
 
-public class Test {
-    public static void main(String[] args) throws Exception {
+package pw.phylame.commons.value;
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+@Data
+@RequiredArgsConstructor
+public final class Triple<A, B, C> {
+    private final A first;
+    private final B second;
+    private final C third;
+
+    public <T> Triple<T, B, C> withFirst(T first) {
+        return new Triple<>(first, second, third);
+    }
+
+    public <T> Triple<A, T, C> withSecond(T second) {
+        return new Triple<>(first, second, third);
+    }
+
+    public <T> Triple<A, B, T> withThird(T third) {
+        return new Triple<>(first, second, third);
     }
 }

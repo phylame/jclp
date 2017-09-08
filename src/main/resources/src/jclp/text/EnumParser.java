@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -15,8 +14,16 @@
  * limitations under the License.
  */
 
-public class Test {
-    public static void main(String[] args) throws Exception {
+package src.jclp.text;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class EnumParser<T extends Enum<T>> implements Parser<T> {
+    private final Class<T> type;
+
+    @Override
+    public T parse(String str) {
+        return Enum.valueOf(type, str);
     }
 }

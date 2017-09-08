@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -15,8 +14,26 @@
  * limitations under the License.
  */
 
-public class Test {
-    public static void main(String[] args) throws Exception {
+package pw.phylame.commons;
 
+import java.util.Objects;
+
+/**
+ * Utilities for string.
+ */
+public final class StringUtils {
+    private StringUtils() {
+    }
+
+    public static boolean isEmpty(CharSequence cs) {
+        return cs == null || cs.length() == 0;
+    }
+
+    public static boolean isNotEmpty(CharSequence cs) {
+        return cs != null && cs.length() != 0;
+    }
+
+    public static String coalesce(CharSequence source, CharSequence fallback) {
+        return isNotEmpty(source) ? source.toString() : Objects.toString(fallback, null);
     }
 }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -15,8 +14,14 @@
  * limitations under the License.
  */
 
-public class Test {
-    public static void main(String[] args) throws Exception {
+package src.jclp.setting;
 
-    }
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+public interface PersistableSettings {
+    void load(InputStream in) throws IOException;
+
+    void sync(OutputStream out) throws IOException;
 }

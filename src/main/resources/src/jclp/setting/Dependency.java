@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Peng Wan <phylame@163.com>
  *
@@ -15,8 +14,19 @@
  * limitations under the License.
  */
 
-public class Test {
-    public static void main(String[] args) throws Exception {
+package src.jclp.setting;
 
-    }
+import src.jclp.Keyed;
+import lombok.Data;
+import lombok.NonNull;
+
+import java.util.function.Predicate;
+
+@Data
+public class Dependency implements Keyed<String> {
+    @NonNull
+    private final String key;
+
+    @NonNull
+    private final Predicate<Object> condition;
 }
