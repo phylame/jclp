@@ -17,28 +17,44 @@
 package jclp;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
-import static jclp.Validate.require;
+import lombok.val;
 
 public final class RandomUtils {
     private RandomUtils() {
     }
 
-    public static int nextInt() {
-        return ThreadLocalRandom.current().nextInt();
+    private static final ThreadLocal<Random> random = new ThreadLocal<Random>() {
+        protected Random initialValue() {
+            return new Random();
+        };
+    };
+
+    public static int randInteger() {
+        val random = RandomUtils.random.get();
+        random.setSeed(System.currentTimeMillis());
+        return random.nextInt();
     }
 
-    public static int nextInt(int bottom, int top) {
-        require(top >= bottom, "top(%s) must >= bottom(%s)", top, bottom);
-        return ThreadLocalRandom.current().nextInt(bottom, top - bottom);
+    public static int randInteger(int bottom, int top) {
+        Validate.require(top >= bottom, "top(%s) must >= bottom(%s)", top, bottom);
+        val random = RandomUtils.random.get();
+        random.setSeed(System.currentTimeMillis());
+        return random.nextInt(top - bottom) + bottom;
     }
 
-    public static <T> T choose(T[] items) {
-        return ArrayUtils.isNotEmpty(items) ? items[nextInt(0, items.length)] : null;
+    public static <T> T anyOf(T[] items) {
+        if (items == null || items.length == 0) {
+            return null;
+        }
+        return items[randInteger(0, items.length)];
     }
 
-    public static <T> T choose(List<T> items) {
-        return CollectionUtils.isNotEmpty(items) ? items.get(nextInt(0, items.size())) : null;
+    public static <T> T anyOf(List<T> items) {
+        if (items == null || items.size() == 0) {
+            return null;
+        }
+        return items.get(randInteger(0, items.size()));
     }
 }

@@ -23,9 +23,6 @@ import lombok.val;
 
 import java.util.*;
 
-import static jclp.CollectionUtils.getFirst;
-import static jclp.CollectionUtils.isNotEmpty;
-
 @RequiredArgsConstructor
 public class CollectionMap<K, V> implements Map<K, Collection<V>> {
     /**
@@ -41,7 +38,7 @@ public class CollectionMap<K, V> implements Map<K, Collection<V>> {
     private final Class<?> type;
 
     public CollectionMap() {
-        this(new HashMap<>(), ArrayList.class);
+        this(new HashMap<K, Collection<V>>(), ArrayList.class);
     }
 
     public CollectionMap(Map<K, Collection<V>> m) {
@@ -84,7 +81,7 @@ public class CollectionMap<K, V> implements Map<K, Collection<V>> {
 
     public V getOne(K key) {
         val c = map.get(key);
-        return isNotEmpty(c) ? getFirst(c) : null;
+        return CollectionUtils.isNotEmpty(c) ? CollectionUtils.firstOf(c) : null;
     }
 
     @Override
@@ -162,14 +159,12 @@ public class CollectionMap<K, V> implements Map<K, Collection<V>> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
+        if (this == o)
             return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass())
             return false;
-        }
-        val rhs = (CollectionMap<?, ?>) o;
-        return map.equals(rhs.map) && type.equals(rhs.type);
+        CollectionMap<?, ?> collectionMap = (CollectionMap<?, ?>) o;
+        return map.equals(collectionMap.map) && type.equals(collectionMap.type);
     }
 
     @Override

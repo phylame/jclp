@@ -16,9 +16,10 @@
 
 package jclp.io;
 
-import jclp.CollectionUtils;
-import jclp.Validate;
 import jclp.log.Log;
+import jclp.CollectionUtils;
+import jclp.MiscUtils;
+import jclp.Validate;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -87,10 +88,6 @@ public final class IOUtils {
 
     public static BufferedWriter buffered(@NonNull Writer writer) {
         return (writer instanceof BufferedWriter) ? (BufferedWriter) writer : new BufferedWriter(writer);
-    }
-
-    public static String platformEncoding() {
-        return System.getProperty("file.encoding");
     }
 
     public interface Reading {
@@ -481,7 +478,7 @@ public final class IOUtils {
     public static URL resourceFor(@NonNull String path, ClassLoader loader) throws MalformedURLException {
         if (path.startsWith(CLASS_PATH_PREFIX)) {
             val name = path.substring(CLASS_PATH_PREFIX.length());
-            return loader != null ? loader.getResource(name) : Thread.currentThread().getContextClassLoader().getResource(name);
+            return loader != null ? loader.getResource(name) : MiscUtils.getContextClassLoader().getResource(name);
         } else if (path.matches("^[a-z]{2,}://.*")) {
             return new URL(path);
         } else {
@@ -551,6 +548,7 @@ public final class IOUtils {
 
         @Override
         public void flush() throws IOException {
+
         }
     }
 
@@ -615,4 +613,5 @@ public final class IOUtils {
             throw new UnsupportedOperationException();
         }
     }
+
 }

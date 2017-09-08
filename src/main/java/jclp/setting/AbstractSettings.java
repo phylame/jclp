@@ -16,6 +16,7 @@
 
 package jclp.setting;
 
+import jclp.Validate;
 import jclp.value.Values;
 import lombok.NonNull;
 import lombok.Setter;
@@ -26,7 +27,6 @@ import java.util.Map;
 
 import static jclp.CollectionUtils.isEmpty;
 import static jclp.CollectionUtils.isNotEmpty;
-import static jclp.Validate.require;
 
 @ToString
 public abstract class AbstractSettings implements Settings {
@@ -99,8 +99,22 @@ public abstract class AbstractSettings implements Settings {
     @Override
     public Object set(String key, @NonNull Object value) {
         val type = getType(key);
-        require(type == null || type.isInstance(value), "instance of %s expected", type);
+        Validate.require(type == null || type.isInstance(value), "instance of %s expected", type);
         return handleSet(key, value);
+    }
+
+    @Override
+    public void update(@NonNull Settings settings) {
+        for (val entry : settings) {
+            set(entry.getFirst(), entry.getSecond());
+        }
+    }
+
+    @Override
+    public void update(@NonNull Map<String, ?> values) {
+        for (val entry : values.entrySet()) {
+            set(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override

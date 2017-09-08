@@ -17,14 +17,12 @@
 package jclp;
 
 import jclp.text.Render;
+import jclp.text.StringJoiner;
 import jclp.value.Pair;
 import lombok.NonNull;
 import lombok.val;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public final class StringUtils {
     private StringUtils() {
@@ -150,6 +148,7 @@ public final class StringUtils {
         }
         int len = cs.length();
         int st = 0;
+
         char ch;
         while (st < len && (((ch = cs.charAt(st)) <= ' ') || (ch == CHINESE_INDENT))) {
             st++;
@@ -176,21 +175,45 @@ public final class StringUtils {
         return st > 0 || len < str.length() ? str.substring(st, len) : str;
     }
 
-    public static <T> String repeated(T obj, int count) {
-        return repeated(obj, count, null);
+    public static <T> String duplicated(T obj, int count) {
+        return duplicated(obj, count, null);
     }
 
-    public static <T> String repeated(T obj, int count, Render<? super T> transform) {
+    public static <T> String duplicated(T obj, int count, Render<? super T> transform) {
         if (count <= 0) {
             return "";
         } else if (count == 1) {
             return obj.toString();
         }
-        val b = new StringBuilder(8 * count);
-        for (int i = 0; i < count; ++i) {
-            b.append(transform != null ? transform.render(obj) : obj);
+        return join("", CollectionUtils.repeated(obj, count), transform);
+    }
+
+    @SafeVarargs
+    public static <T> String join(CharSequence separator, T... items) {
+        return join(separator, items, null);
+    }
+
+    public static <T> String join(CharSequence separator, T[] items, Render<? super T> transform) {
+        if (ArrayUtils.isEmpty(items)) {
+            return "";
         }
-        return b.toString();
+        return join(separator, ArrayUtils.iterator(items), transform);
+    }
+
+    public static <T> String join(CharSequence separator, Iterator<T> iterator) {
+        return join(separator, iterator, null);
+    }
+
+    public static <T> String join(CharSequence separator, Iterator<T> iterator, Render<? super T> transform) {
+        if (iterator == null) {
+            return "";
+        }
+        return StringJoiner.<T>builder()
+                .iterator(iterator)
+                .separator(separator)
+                .transform(transform)
+                .build()
+                .join();
     }
 
     /**
@@ -209,20 +232,20 @@ public final class StringUtils {
 
     public static void splitLines(@NonNull CharSequence cs, List<String> lines, boolean skipEmpty) {
         int i, begin = 0;
-        CharSequence subseq;
         val end = cs.length();
+        CharSequence sub;
         for (i = 0; i < end; ) {
             val ch = cs.charAt(i);
             if ('\n' == ch) { // \n
-                subseq = cs.subSequence(begin, i);
-                if (subseq.length() > 0 || !skipEmpty) {
-                    lines.add(subseq.toString());
+                sub = cs.subSequence(begin, i);
+                if (sub.length() > 0 || !skipEmpty) {
+                    lines.add(sub.toString());
                 }
                 begin = ++i;
             } else if ('\r' == ch) {
-                subseq = cs.subSequence(begin, i);
-                if (subseq.length() > 0 || !skipEmpty) {
-                    lines.add(subseq.toString());
+                sub = cs.subSequence(begin, i);
+                if (sub.length() > 0 || !skipEmpty) {
+                    lines.add(sub.toString());
                 }
                 if (i + 1 < end && '\n' == cs.charAt(i + 1)) { // \r\n
                     begin = i += 2;
@@ -234,18 +257,18 @@ public final class StringUtils {
             }
         }
         if (i >= begin) {
-            subseq = cs.subSequence(begin, cs.length());
-            if (subseq.length() > 0 || !skipEmpty) {
-                lines.add(subseq.toString());
+            sub = cs.subSequence(begin, cs.length());
+            if (sub.length() > 0 || !skipEmpty) {
+                lines.add(sub.toString());
             }
         }
     }
 
-    public static String getFirst(String str, String separator) {
+    public static String firstPartOf(String str, String separator) {
         return partition(str, separator).getFirst();
     }
 
-    public static String getSecond(String str, String separator) {
+    public static String secondPartOf(String str, String separator) {
         return partition(str, separator).getSecond();
     }
 
@@ -256,33 +279,33 @@ public final class StringUtils {
                 : new Pair<>(str.substring(0, index), str.substring(index + separator.length()));
     }
 
-    public static List<Pair<String, String>> getPairs(String str, String partSeparator) {
-        return getPairs(str, partSeparator, "=");
+    public static List<Pair<String, String>> getNamedPairs(String str, String partSeparator) {
+        return getNamedPairs(str, partSeparator, "=");
     }
 
-    public static List<Pair<String, String>> getPairs(@NonNull String str,
-                                                      @NonNull String partSeparator,
-                                                      @NonNull String valueSeparator) {
+    public static List<Pair<String, String>> getNamedPairs(@NonNull String str,
+                                                           @NonNull String partSeparator,
+                                                           @NonNull String valueSeparator) {
         val pairs = new ArrayList<Pair<String, String>>();
         for (val part : str.split(partSeparator)) {
-            pairs.add(partition(trimmed(part), valueSeparator));
+            pairs.add(partition(part, valueSeparator));
         }
         return pairs;
     }
 
-    public static String getValue(String str, String name, String partSeparator) {
-        return getValue(str, name, partSeparator, "=", true);
+    public static String valueOfName(String str, String name, String partSeparator) {
+        return valueOfName(str, name, partSeparator, "=", true);
     }
 
-    public static String getValue(String str, String name, String partSeparator, boolean ignoreCase) {
-        return getValue(str, name, partSeparator, "=", ignoreCase);
+    public static String valueOfName(String str, String name, String partSeparator, boolean ignoreCase) {
+        return valueOfName(str, name, partSeparator, "=", ignoreCase);
     }
 
-    public static String getValue(@NonNull String str,
-                                  @NonNull String name,
-                                  @NonNull String partSeparator,
-                                  @NonNull String valueSeparator,
-                                  boolean ignoreCase) {
+    public static String valueOfName(@NonNull String str,
+                                     @NonNull String name,
+                                     @NonNull String partSeparator,
+                                     @NonNull String valueSeparator,
+                                     boolean ignoreCase) {
         for (String part : str.split(partSeparator)) {
             part = part.trim();
             val index = part.indexOf(valueSeparator);
@@ -296,29 +319,29 @@ public final class StringUtils {
         return null;
     }
 
-    public static String[] getValues(String str, String name, String partSeparator) {
-        return getValues(str, name, partSeparator, "=", true);
+    public static String[] valuesOfName(String str, String name, String partSeparator) {
+        return valuesOfName(str, name, partSeparator, "=", true);
     }
 
-    public static String[] getValues(String str, String name, String partSeparator, boolean ignoreCase) {
-        return getValues(str, name, partSeparator, "=", ignoreCase);
+    public static String[] valuesOfName(String str, String name, String partSeparator, boolean ignoreCase) {
+        return valuesOfName(str, name, partSeparator, "=", ignoreCase);
     }
 
-    public static String[] getValues(@NonNull String str,
-                                     @NonNull String name,
-                                     @NonNull String partSeparator,
-                                     @NonNull String valueSeparator,
-                                     boolean ignoreCase) {
-        val results = new ArrayList<String>();
+    public static String[] valuesOfName(@NonNull String str,
+                                        @NonNull String name,
+                                        @NonNull String partSeparator,
+                                        @NonNull String valueSeparator,
+                                        boolean ignoreCase) {
+        val result = new ArrayList<String>();
         for (val part : str.split(partSeparator)) {
             val index = part.trim().indexOf(valueSeparator);
             if (index != -1) {
                 val tag = part.substring(0, index);
                 if (ignoreCase && tag.equalsIgnoreCase(name) || tag.equals(name)) {
-                    results.add(part.substring(index + 1));
+                    result.add(part.substring(index + 1));
                 }
             }
         }
-        return results.toArray(new String[results.size()]);
+        return result.toArray(new String[result.size()]);
     }
 }

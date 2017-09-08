@@ -16,6 +16,7 @@
 
 package jclp.setting;
 
+import jclp.function.Function;
 import jclp.value.Pair;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ import lombok.val;
 
 import java.util.Iterator;
 import java.util.Map;
+
+import static jclp.CollectionUtils.map;
 
 @RequiredArgsConstructor
 public class MapSettings implements Settings {
@@ -61,6 +64,13 @@ public class MapSettings implements Settings {
     }
 
     @Override
+    public void update(Settings settings) {
+        for (Pair<String, ?> pair : settings) {
+            set(pair.getFirst(), pair.getSecond());
+        }
+    }
+
+    @Override
     public Object remove(String key) {
         return map.remove(key);
     }
@@ -71,11 +81,13 @@ public class MapSettings implements Settings {
     }
 
     @Override
-    public Iterator<Pair<String, Object>> iterator() {
-        return map.entrySet()
-                .stream()
-                .map(e -> new Pair<>(e.getKey(), e.getValue()))
-                .iterator();
+    public Iterator<Pair<String, ?>> iterator() {
+        return map(map.entrySet().iterator(), new Function<Map.Entry<String, Object>, Pair<String, ?>>() {
+            @Override
+            public Pair<String, ?> apply(Map.Entry<String, Object> entry) {
+                return new Pair<>(entry.getKey(), entry.getValue());
+            }
+        });
     }
 
     @Override

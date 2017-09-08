@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package jclp.spi;
+package jclp;
 
+import jclp.function.BiFunction;
 import jclp.io.IOUtils;
 import jclp.log.Log;
 import lombok.NonNull;
@@ -24,7 +25,6 @@ import lombok.val;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.BiFunction;
 
 import static jclp.Validate.checkNotNull;
 import static jclp.Validate.requireNotEmpty;
@@ -288,7 +288,7 @@ public final class Implementor<T> {
             }
             if (clazz == null) {
                 checkNotNull(path, "No path and class specified");
-                Class<?> klass = loader != null ? Class.forName(path, true, loader) : Class.forName(path);
+                val klass = loader != null ? Class.forName(path, true, loader) : Class.forName(path);
                 if (!type.isAssignableFrom(klass)) {
                     Log.d(TAG, "{0} is not sub class of {1}", klass, type);
                     return null;

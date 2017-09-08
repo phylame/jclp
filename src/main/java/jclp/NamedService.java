@@ -14,28 +14,12 @@
  * limitations under the License.
  */
 
-package jclp.setting;
+package jclp;
 
-import jclp.value.Pair;
+import java.util.Set;
 
-import java.util.Map;
+public interface NamedService {
+    String getName();
 
-public interface Settings extends Iterable<Pair<String, ?>> {
-    boolean isEnable(String key);
-
-    Object get(String key);
-
-    <T> T get(String key, Class<T> type);
-
-    boolean contains(String key);
-
-    Object set(String key, Object value);
-
-    void update(Map<String, ?> values);
-
-    void update(Settings settings);
-
-    Object remove(String key);
-
-    void clear();
+    Set<String> getNames();
 }

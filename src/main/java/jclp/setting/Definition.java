@@ -16,11 +16,11 @@
 
 package jclp.setting;
 
+import jclp.function.Predicate;
 import jclp.Keyed;
 import lombok.*;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 @Getter
 @Builder

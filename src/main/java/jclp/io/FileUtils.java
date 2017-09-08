@@ -16,6 +16,7 @@
 
 package jclp.io;
 
+import jclp.function.Consumer;
 import lombok.val;
 
 import java.io.File;
@@ -25,7 +26,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
 public final class FileUtils {
     private FileUtils() {
