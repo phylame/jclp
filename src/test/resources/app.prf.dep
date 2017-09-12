@@ -1,5 +1,0 @@
-app.his.limit->app.his.enable@ag:any,empty;eq:true
-
-app.his.more->app.his.limit@!ge:i10
-
-app.log.level->app.mode@in:debug,trace,info
