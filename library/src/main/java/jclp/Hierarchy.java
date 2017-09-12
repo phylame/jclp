@@ -17,7 +17,7 @@ public class Hierarchy<T extends Hierarchy<T>> implements Hierarchical<T> {
     @Setter(PROTECTED)
     private T parent = null;
 
-    private ArrayList<T> children = new ArrayList<>();
+    private final ArrayList<T> children = new ArrayList<>();
 
     public void append(@NonNull T item) {
         children.add(ensureSolitary(item));
@@ -78,8 +78,8 @@ public class Hierarchy<T extends Hierarchy<T>> implements Hierarchical<T> {
     }
 
     public void clear() {
-        for (int i = 0, end = children.size(); i < end; ++i) {
-            children.get(i).setParent(null);
+        for (val item : children) {
+            item.setParent(null);
         }
         children.clear();
     }

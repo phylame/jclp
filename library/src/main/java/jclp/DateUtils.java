@@ -32,17 +32,11 @@ public final class DateUtils {
 
     public static final String LOOSE_ISO_DATE_TIME_FORMAT = "yyyy-M-d H:m:s";
 
-    public static final Value<DateTimeFormatter> LOOSE_ISO_DATE = new Lazy<>(() -> {
-        return DateTimeFormatter.ofPattern(LOOSE_ISO_DATE_FORMAT);
-    });
+    public static final Value<DateTimeFormatter> LOOSE_ISO_DATE = new Lazy<>(() -> DateTimeFormatter.ofPattern(LOOSE_ISO_DATE_FORMAT));
 
-    public static final Value<DateTimeFormatter> LOOSE_ISO_TIME = new Lazy<>(() -> {
-        return DateTimeFormatter.ofPattern(LOOSE_ISO_TIME_FORMAT);
-    });
+    public static final Value<DateTimeFormatter> LOOSE_ISO_TIME = new Lazy<>(() -> DateTimeFormatter.ofPattern(LOOSE_ISO_TIME_FORMAT));
 
-    public static final Value<DateTimeFormatter> LOOSE_ISO_DATE_TIME = new Lazy<>(() -> {
-        return DateTimeFormatter.ofPattern(LOOSE_ISO_DATE_TIME_FORMAT);
-    });
+    public static final Value<DateTimeFormatter> LOOSE_ISO_DATE_TIME = new Lazy<>(() -> DateTimeFormatter.ofPattern(LOOSE_ISO_DATE_TIME_FORMAT));
 
     public static String toISO(@NonNull Date date) {
         return new SimpleDateFormat(ISO_FORMAT).format(date);

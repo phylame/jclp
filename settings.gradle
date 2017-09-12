@@ -15,4 +15,6 @@ include 'api'
 include 'services:webservice'
 */
 
+include 'library'
+
 rootProject.name = 'jclp'

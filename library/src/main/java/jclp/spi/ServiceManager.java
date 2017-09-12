@@ -16,8 +16,8 @@ public class ServiceManager<T extends ServiceProvider> {
 
     private ServiceLoader<T> serviceLoader;
 
-    private HashMap<String, T> localRegistry = new HashMap<>();
-    private HashSet<T> serviceSpis = new HashSet<>();
+    private final HashMap<String, T> localRegistry = new HashMap<>();
+    private final HashSet<T> serviceSpis = new HashSet<>();
 
     public ServiceManager(@NonNull Class<T> serviceType) {
         this.serviceType = serviceType;
@@ -32,14 +32,9 @@ public class ServiceManager<T extends ServiceProvider> {
     }
 
     protected void init() {
-        serviceLoader = AccessController.doPrivileged(new PrivilegedAction<ServiceLoader<T>>() {
-            @Override
-            public ServiceLoader<T> run() {
-                return classLoader != null
-                        ? ServiceLoader.load(serviceType, classLoader)
-                        : ServiceLoader.loadInstalled(serviceType);
-            }
-        });
+        serviceLoader = AccessController.doPrivileged((PrivilegedAction<ServiceLoader<T>>) () -> classLoader != null
+                ? ServiceLoader.load(serviceType, classLoader)
+                : ServiceLoader.loadInstalled(serviceType));
         initServices();
     }
 

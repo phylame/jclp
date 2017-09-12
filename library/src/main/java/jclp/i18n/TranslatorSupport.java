@@ -8,7 +8,7 @@ import java.util.MissingResourceException;
 import static jclp.Validate.checkNotNull;
 
 public class TranslatorSupport {
-    public static String path;
+    public static String path = null;
 
     private static final Lazy<Linguist> linguist = new Lazy<>(() -> {
         checkNotNull(path, "path is not specified");
