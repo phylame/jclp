@@ -1,6 +1,9 @@
 package jclp;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.val;
 
 import java.util.ArrayList;
 import java.util.Collections;

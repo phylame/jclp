@@ -16,22 +16,22 @@ public class JDKFacade implements LogFacade {
 
     private Level mapLevel(LogLevel level) {
         switch (level) {
-        case ALL:
-            return Level.ALL;
-        case TRACE:
-            return Level.FINER;
-        case DEBUG:
-            return Level.FINE;
-        case INFO:
-            return Level.INFO;
-        case WARN:
-            return Level.WARNING;
-        case ERROR:
-            return Level.SEVERE;
-        case OFF:
-            return Level.OFF;
-        default:
-            return null;
+            case ALL:
+                return Level.ALL;
+            case TRACE:
+                return Level.FINER;
+            case DEBUG:
+                return Level.FINE;
+            case INFO:
+                return Level.INFO;
+            case WARN:
+                return Level.WARNING;
+            case ERROR:
+                return Level.SEVERE;
+            case OFF:
+                return Level.OFF;
+            default:
+                return null;
         }
     }
 }

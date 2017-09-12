@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/jclp.iml" filepath="$PROJECT_DIR$/jclp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jclp_main.iml" filepath="$PROJECT_DIR$/.idea/modules/jclp_main.iml" group="jclp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jclp_test.iml" filepath="$PROJECT_DIR$/.idea/modules/jclp_test.iml" group="jclp" />
     </modules>
   </component>
 </project>
