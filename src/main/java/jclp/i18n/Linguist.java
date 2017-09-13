@@ -16,8 +16,6 @@
 
 package jclp.i18n;
 
-import jclp.Attachable;
-import jclp.CollectionUtils;
 import jclp.io.ResourceUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -26,13 +24,11 @@ import java.io.IOException;
 import java.util.*;
 
 @RequiredArgsConstructor
-public class Linguist implements Translator, Attachable<Translator> {
+public class Linguist extends AbstractTranslator implements Translator {
     private final String name;
     private final Locale locale;
     private final ClassLoader loader;
     private final boolean dummy;
-
-    private final LinkedHashSet<Translator> attachments = new LinkedHashSet<>();
 
     public Linguist(String path) {
         this(path, null, null, true);
@@ -43,30 +39,8 @@ public class Linguist implements Translator, Attachable<Translator> {
     }
 
     @Override
-    public String tr(String key) throws MissingResourceException {
-        try {
-            return getBundle().getString(key);
-        } catch (MissingResourceException e) {
-            if (CollectionUtils.isNotEmpty(attachments)) {
-                for (val translator : attachments) {
-                    try {
-                        return translator.tr(key);
-                    } catch (MissingResourceException ignored) {
-                    }
-                }
-            }
-            throw e;
-        }
-    }
-
-    @Override
-    public void attach(Collection<? extends Translator> translators) {
-        attachments.addAll(translators);
-    }
-
-    @Override
-    public void detach(Collection<? extends Translator> translators) {
-        attachments.removeAll(translators);
+    protected String handleGet(String key) throws MissingResourceException {
+        return getBundle().getString(key);
     }
 
     protected ResourceBundle getBundle() {
@@ -85,8 +59,6 @@ public class Linguist implements Translator, Attachable<Translator> {
     }
 
     private static class ResourceControl extends ResourceBundle.Control {
-        private static final ResourceControl INSTANCE = new ResourceControl();
-
         @Override
         public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IllegalAccessException, InstantiationException, IOException {
             if (format.equals("java.properties")) {
@@ -97,11 +69,11 @@ public class Linguist implements Translator, Attachable<Translator> {
             }
             return super.newBundle(baseName, locale, format, loader, reload);
         }
+
+        private static final ResourceControl INSTANCE = new ResourceControl();
     }
 
     private static class DummyBundle extends ResourceBundle {
-        private static final DummyBundle INSTANCE = new DummyBundle();
-
         @Override
         protected Object handleGetObject(String key) {
             return null;
@@ -111,5 +83,7 @@ public class Linguist implements Translator, Attachable<Translator> {
         public Enumeration<String> getKeys() {
             return Collections.emptyEnumeration();
         }
+
+        private static final DummyBundle INSTANCE = new DummyBundle();
     }
 }

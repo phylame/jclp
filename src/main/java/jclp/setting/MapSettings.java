@@ -3,7 +3,7 @@ package jclp.setting;
 import jclp.io.IOUtils;
 import jclp.io.Persistable;
 import jclp.log.Log;
-import jclp.text.ConverterManager;
+import jclp.text.Converters;
 import jclp.value.Pair;
 import lombok.NonNull;
 import lombok.ToString;
@@ -55,7 +55,7 @@ public class MapSettings extends AbstractSettings implements Persistable {
     @Override
     protected <T> T convertValue(Object value, Class<T> type) {
         check(value instanceof String, "value must be string: %s", value);
-        return ConverterManager.parse((String) value, type);
+        return Converters.parse((String) value, type);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class MapSettings extends AbstractSettings implements Persistable {
         for (val entry : props.entrySet()) {
             val value = entry.getValue();
             if (!(value instanceof CharSequence)) {
-                entry.setValue(ConverterManager.render(value));
+                entry.setValue(Converters.render(value));
             }
         }
         props.store(writer, null);
@@ -112,7 +112,7 @@ public class MapSettings extends AbstractSettings implements Persistable {
             }
             Object value;
             try {
-                value = ConverterManager.parse(entry.getValue().toString(), definition.getType());
+                value = Converters.parse(entry.getValue().toString(), definition.getType());
             } catch (Exception e) {
                 Log.e(getClass().getSimpleName(), "cannot convert to type({0}): {1}", definition.getType(), entry.getValue());
                 continue;

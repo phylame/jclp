@@ -1,6 +1,6 @@
 package jclp.text;
 
-import jclp.IllegalImplementationtError;
+import jclp.IllegalImplementationError;
 import lombok.NonNull;
 import lombok.val;
 
@@ -11,8 +11,8 @@ import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Locale;
 
-public final class ConverterManager {
-    private ConverterManager() {
+public final class Converters {
+    private Converters() {
     }
 
     private static final IdentityHashMap<Class<?>, Converter<?>> converters = new IdentityHashMap<>();
@@ -48,7 +48,7 @@ public final class ConverterManager {
         if (converter != null) {
             str = converter.render(obj);
             if (str == null) {
-                throw new IllegalImplementationtError("Converter rendered null: " + converter);
+                throw new IllegalImplementationError("Converter rendered null: " + converter);
             }
         }
         return str;
@@ -64,13 +64,13 @@ public final class ConverterManager {
         if (converter != null) {
             obj = converter.parse(str);
             if (obj == null) {
-                throw new IllegalImplementationtError("Converter parsed null: " + converter);
+                throw new IllegalImplementationError("Converter parsed null: " + converter);
             }
         }
         return obj;
     }
 
-    public static void registerDefaults() {
+    private static void registerDefaults() {
         register(Locale.class, new DefaultConverter<>(Locale.class));
         register(String.class, new DefaultConverter<>(String.class));
         register(Date.class, new DefaultConverter<>(Date.class));
