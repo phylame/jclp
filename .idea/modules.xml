@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jclp.iml" filepath="$PROJECT_DIR$/.idea/modules/jclp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library.iml" group="library" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library_main.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library_main.iml" group="library" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library_test.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library_test.iml" group="library" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commons.iml" filepath="$PROJECT_DIR$/.idea/modules/commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commons_main.iml" filepath="$PROJECT_DIR$/.idea/modules/commons_main.iml" group="commons" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commons_test.iml" filepath="$PROJECT_DIR$/.idea/modules/commons_test.iml" group="commons" />
     </modules>
   </component>
 </project>

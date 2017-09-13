@@ -6,16 +6,75 @@
  * user guide available at https://docs.gradle.org/4.1/userguide/java_library_plugin.html
  */
 
-buildscript {
+plugins {
+    
+    id 'maven-publish'
+    id 'java-library'
+    id 'com.jfrog.bintray' version '1.7.3'
+    id 'com.github.b3er.local.properties' version '1.1'
+}
+
+version = '3.0'
+group = 'pw.phylame.util'
+description = 'Commons & Utilities for Java'
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+allprojects {
     repositories {
         mavenLocal()
         jcenter()
     }
 }
 
-allprojects {
-    repositories {
-        mavenLocal()
-        jcenter()
+dependencies {
+    api "org.projectlombok:lombok:$lombokVersion"
+    testImplementation "junit:junit:$junitVersion"
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier "sources"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	from javadoc.destinationDir
+    classifier "javadoc"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact sourcesJar
+			artifact javadocJar
+            from components.java
+        }
+    }
+}
+
+bintray {
+    user = project.properties['bintray.user']
+    key = project.properties['bintray.apikey']
+    publications = ['maven']
+    pkg {
+        repo = 'maven'
+        name = project.name
+        licenses = ['Apache-2.0']
+        labels = ['java', 'commons', 'utilities']
+        vcsUrl = gitUrl
+        websiteUrl = siteUrl
+        issueTrackerUrl = issueUrl
+        publicDownloadNumbers = true
+        publish = true
+
+        githubRepo = 'phylame/jclp'
+        githubReleaseNotesFile = 'README.md'
+
+        version {
+            name = project.version
+            desc = project.description
+            released = new Date()
+        }
     }
 }
