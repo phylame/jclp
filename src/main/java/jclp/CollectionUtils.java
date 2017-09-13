@@ -17,6 +17,7 @@
 package jclp;
 
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.val;
 
 import java.util.*;
@@ -65,7 +66,9 @@ public final class CollectionUtils {
         V value = m.get(key);
         if (value == null && (!nullabe || !m.containsKey(key))) {
             value = creator.apply(key);
-            m.put(key, value);
+            if (nullabe || value != null) {
+                m.put(key, value);
+            }
         }
         return value;
     }
@@ -79,5 +82,14 @@ public final class CollectionUtils {
         val set = new HashSet<E>();
         Collections.addAll(set, elements);
         return Collections.unmodifiableSet(set);
+    }
+
+    public static <E> List<E> listOf(E element) {
+        return Collections.singletonList(element);
+    }
+
+    @SafeVarargs
+    public static <E> List<E> listOf(E... elements) {
+        return Arrays.asList(elements);
     }
 }

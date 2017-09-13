@@ -61,6 +61,7 @@ bintray {
         name = project.name
         licenses = ['Apache-2.0']
         labels = ['java', 'commons', 'utilities']
+
         vcsUrl = gitUrl
         websiteUrl = siteUrl
         issueTrackerUrl = issueUrl

@@ -4,7 +4,6 @@ import jclp.CollectionUtils;
 import jclp.io.ResourceUtils;
 import jclp.log.Log;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.io.IOException;
@@ -25,10 +24,7 @@ public final class Types {
     }
 
     public static void setAlias(String id, String... aliases) {
-        requireNotEmpty(id, "unknown type %s", id);
-        val type = lookup(id);
-        requireNotNull(type, "unknown type %s", id);
-        Collections.addAll(type.aliases, aliases);
+        Collections.addAll(getRequired(id).aliases, aliases);
     }
 
     public static void mapClass(String id, @NonNull Class<?> clazz) {
@@ -42,7 +38,7 @@ public final class Types {
         if (isEmpty(id)) {
             return null;
         }
-        val type = lookup(id);
+        val type = lookupType(id);
         return type != null ? type.clazz : null;
     }
 
@@ -67,24 +63,18 @@ public final class Types {
     }
 
     public static String getName(String id) {
-        if (isEmpty(id)) {
-            return null;
-        }
-        return M.optTr("jclp.type." + id, null);
+        return isEmpty(id) ? null : M.optTr("type." + id, null);
     }
 
     public static void setDefault(String id, Object value) {
-        requireNotEmpty(id, "unknown type %s", id);
-        val type = lookup(id);
-        requireNotNull(type, "unknown type %s", id);
-        type.value = value;
+        getRequired(id).value = value;
     }
 
     public static Object getDefault(String id) {
         if (isEmpty(id)) {
             return null;
         }
-        val type = lookup(id);
+        val type = lookupType(id);
         if (type == null) {
             return null;
         }
@@ -97,15 +87,22 @@ public final class Types {
         return value;
     }
 
+    private static Type getRequired(String id) {
+        requireNotEmpty(id, "type id cannot be null or empty");
+        val type = lookupType(id);
+        requireNotNull(type, "no mapping for type %s", id);
+        return type;
+    }
+
     private static Type getOrPut(String id) {
-        Type type = lookup(id);
+        Type type = lookupType(id);
         if (type == null) {
-            types.put(id, type = new Type(id));
+            types.put(id, type = new Type());
         }
         return type;
     }
 
-    private static Type lookup(String id) {
+    private static Type lookupType(String id) {
         Type type = cache.get(id);
         if (type == null) {
             type = types.get(id);
@@ -150,10 +147,7 @@ public final class Types {
         initBuiltins();
     }
 
-    @RequiredArgsConstructor
     private static class Type {
-        private final String id;
-
         private Class<?> clazz;
 
         private Object value = null;
