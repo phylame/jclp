@@ -57,7 +57,7 @@ public class TranslatorHelper implements Translator {
     @Override
     public String tr(String key) throws MissingResourceException {
         if (filter != null && !filter.test(key)) {
-            throw new MissingResourceException(key, getClass().getSimpleName(), key);
+            throw new MissingResourceException(key, getClass().getName(), key);
         }
         return CollectionUtils.getOrPut(values, key, it -> it);
     }

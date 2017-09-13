@@ -17,10 +17,9 @@
 package jclp;
 
 import lombok.NonNull;
+import lombok.val;
 
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -69,5 +68,16 @@ public final class CollectionUtils {
             m.put(key, value);
         }
         return value;
+    }
+
+    public static <E> Set<E> setOf(E element) {
+        return Collections.singleton(element);
+    }
+
+    @SafeVarargs
+    public static <E> Set<E> setOf(E... elements) {
+        val set = new HashSet<E>();
+        Collections.addAll(set, elements);
+        return Collections.unmodifiableSet(set);
     }
 }
