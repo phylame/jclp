@@ -7,6 +7,9 @@ import lombok.NonNull;
 import lombok.val;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -18,6 +21,17 @@ import static jclp.Validate.requireNotNull;
 public final class Types {
     private Types() {
     }
+
+    // standard type ids
+    public static final String REAL = "real";
+    public static final String INTEGER = "int";
+    public static final String BOOLEAN = "bool";
+    public static final String STRING = "str";
+    public static final String LOCALE = "locale";
+    public static final String DATE = "date";
+    public static final String TIME = "time";
+    public static final String DATETIME = "datetime";
+    public static final String LEGACY_DATE = "jdate";
 
     public static Set<String> getTypes() {
         return types.keySet();
@@ -137,6 +151,18 @@ public final class Types {
         }
     }
 
+    private static void initDefaults() {
+        setDefault(REAL, 0.0D);
+        setDefault(INTEGER, 0);
+        setDefault(STRING, "");
+        setDefault(BOOLEAN, false);
+        setDefault(DATE, (Supplier<LocalDate>) LocalDate::now);
+        setDefault(TIME, (Supplier<LocalTime>) LocalTime::now);
+        setDefault(DATETIME, (Supplier<LocalDateTime>) LocalDateTime::now);
+        setDefault(LEGACY_DATE, (Supplier<Date>) Date::new);
+        setDefault(LOCALE, (Supplier<Locale>) Locale::getDefault);
+    }
+
     private static final HashMap<String, Type> types = new HashMap<>();
 
     private static final HashMap<String, Type> cache = new HashMap<>();
@@ -145,6 +171,7 @@ public final class Types {
 
     static {
         initBuiltins();
+        initDefaults();
     }
 
     private static class Type {

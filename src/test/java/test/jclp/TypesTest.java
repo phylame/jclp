@@ -62,7 +62,7 @@ public class TypesTest {
 
     @Test
     public void testGetDefault() {
-        assertNull(getDefault("int"));
+        assertEquals(getDefault("int"), 0);
         setDefault("str", "");
         assertEquals(getDefault("str"), "");
         setDefault("date", LocalDate.now());
