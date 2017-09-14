@@ -61,6 +61,10 @@ public final class ResourceUtils {
         return openResource(uri, null, false);
     }
 
+    public static InputStream openResource(String uri, ClassLoader loader) throws IOException {
+        return openResource(uri, loader, false);
+    }
+
     public static InputStream openResource(String uri, ClassLoader loader, boolean reload) throws IOException {
         val url = getResource(uri, loader);
         if (url != null) {
@@ -75,6 +79,10 @@ public final class ResourceUtils {
 
     public static Properties getProperties(String uri) throws IOException {
         return getProperties(uri, null, false);
+    }
+
+    public static Properties getProperties(String uri, ClassLoader loader) throws IOException {
+        return getProperties(uri, loader, false);
     }
 
     public static Properties getProperties(String uri, ClassLoader loader, boolean reload) throws IOException {

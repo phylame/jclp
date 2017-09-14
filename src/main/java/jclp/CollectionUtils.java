@@ -17,7 +17,6 @@
 package jclp;
 
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import lombok.val;
 
 import java.util.*;
@@ -71,6 +70,14 @@ public final class CollectionUtils {
             }
         }
         return value;
+    }
+
+    public static void update(@NonNull Map<? super String, ? super String> m, Properties p) {
+        if (isNotEmpty(p)) {
+            for (val e : p.entrySet()) {
+                m.put(e.getKey().toString(), e.getValue().toString());
+            }
+        }
     }
 
     public static <E> Set<E> setOf(E element) {
